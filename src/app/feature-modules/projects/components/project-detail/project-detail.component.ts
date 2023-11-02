@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateNotificationComponent } from 'src/app/feature-modules/plans/components/update-notification/update-notification.component';
 import { ChangeResponse } from 'src/app/core/model/history/change-response';
 import { OutcomeService } from 'src/app/feature-modules/plans/services/outcome.service';
+import { forkJoin, Observable } from "rxjs";
 
 
 @Component({
@@ -64,11 +65,6 @@ export class ProjectDetailComponent implements OnInit {
     });
     this.getProjectData();
     this.projectReactiveForm();
-
-    setTimeout (() => {
-      this.isEsCellProject = this.productionPlansDetails.some(plan => plan.attemptTypeName === 'es cell');
-      this.coloniesExist();
-    }, 2000);
   }
 
   showEsCellDetails(): boolean {
@@ -157,7 +153,18 @@ export class ProjectDetailComponent implements OnInit {
     this.projectService.getProject(id).subscribe(data => {
       this.project = this.projectAdapter.adapt(data);
       this.originalProjectAsString = JSON.stringify(data);
-      this.getProductionPlans();
+      this.getProductionPlans()
+        .subscribe(productionPlans => {
+          productionPlans.forEach(plan => {
+            if (plan.attemptTypeName === 'es cell allele modification') {
+              this.esCellAlleModPlansDetails.push(plan);
+            } else {
+              this.productionPlansDetails.push(plan);
+            }
+          });
+          this.isEsCellProject = this.productionPlansDetails.some(plan => plan.attemptTypeName === 'es cell');
+          this.coloniesExist();
+        });
       this.getPhenotypingPlans();
       this.loadPermissions();
       this.setFormValues();
@@ -197,20 +204,12 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  private getProductionPlans(): void {
+  private getProductionPlans() {
     if (this.project._links.productionPlans) {
-      this.project._links.productionPlans.map(x => {
-        this.planService.getPlanByUrl(x.href).subscribe(plan => {
-          if (plan.attemptTypeName === 'es cell allele modification') {
-            this.esCellAlleModPlansDetails.push(plan);
-          } else {
-            this.productionPlansDetails.push(plan);
-          }
-          this.error = null;
-        }, error => {
-          this.error = error;
-        });
+      const requests = this.project._links.productionPlans.map(x => {
+        return this.planService.getPlanByUrl(x.href);
       });
+      return forkJoin(requests);
     }
   }
 
