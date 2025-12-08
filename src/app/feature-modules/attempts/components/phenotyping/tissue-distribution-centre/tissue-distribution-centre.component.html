@@ -1,92 +1,89 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Tissue Distribution Centre</mat-card-subtitle>
-    <mat-card-content>
-        <table class="mat-elevation-z8 mat-table">
-            <tr class="mat-header-row">
-                <th class="mat-header-cell">Start Date</th>
-                <th class="mat-header-cell">End Date</th>
-                <th class="mat-header-cell">Work Unit</th>
-                <th class="mat-header-cell">Material Type</th>
-                <th class="mat-header-cell">Action</th>
-            </tr>
-            <ng-template ngFor let-element [ngForOf]="phenotypingStage.tissueDistributions">
-                <tr>
-                    <div *ngIf="canUpdatePlan; then editableFields else readOnlyFields"></div>
-                    <ng-template #editableFields>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput [matDatepicker]="datePickerStartDate" [(ngModel)]="element.startDate"
-                                    [ngModelOptions]="{standalone: true}">
-                                <mat-datepicker-toggle matSuffix [for]="datePickerStartDate"></mat-datepicker-toggle>
-                                <mat-datepicker #datePickerStartDate></mat-datepicker>
-                            </mat-form-field>
-                        </td>
-
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput [matDatepicker]="datePickerEndDate" [(ngModel)]="element.endDate"
-                                    [ngModelOptions]="{standalone: true}">
-                                <mat-datepicker-toggle matSuffix [for]="datePickerEndDate"></mat-datepicker-toggle>
-                                <mat-datepicker #datePickerEndDate></mat-datepicker>
-                            </mat-form-field>
-                        </td>
-
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select [(ngModel)]="element.workUnitName">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let workUnit of workUnits" [value]="workUnit">
-                                        {{ workUnit }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select  [(ngModel)]="element.materialDepositedTypeName">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let materialType of materialTypes" [value]="materialType">
-                                        {{materialType}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <button (click)="onClickToDelete(element)">
-                                <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-                            </button>
-                        </td>
-
-                    </ng-template>
-
-                    <ng-template #readOnlyFields>
-
-                        <td>
-                            {{element.startDate | date}}
-                        </td>
-                        <td>
-                            {{element.endDate | date}}
-                        </td>
-
-                        <td>
-                            {{element.workUnitName}}
-                        </td>
-                        <td>
-                            {{element.materialDepositedTypeName}}
-                        </td>
-                        <td>
-
-                        </td>
-                    </ng-template>
-                </tr>
-            </ng-template>
-            <tr>
-                <td class="no_border"><button (click)="addRow()" *ngIf="canUpdatePlan">
-                        <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-                    </button>
-                </td>
-            </tr>
-        </table>
-    </mat-card-content>
+  <mat-card-subtitle>Tissue Distribution Centre</mat-card-subtitle>
+  <mat-card-content>
+    <table class="mat-elevation-z8 mat-table">
+      <tr class="mat-header-row">
+        <th class="mat-header-cell">Start Date</th>
+        <th class="mat-header-cell">End Date</th>
+        <th class="mat-header-cell">Work Unit</th>
+        <th class="mat-header-cell">Material Type</th>
+        <th class="mat-header-cell">Action</th>
+      </tr>
+      @for (element of phenotypingStage.tissueDistributions; track element) {
+        <tr>
+          @if (canUpdatePlan) {
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput [matDatepicker]="datePickerStartDate" [(ngModel)]="element.startDate"
+                  [ngModelOptions]="{standalone: true}">
+                <mat-datepicker-toggle matSuffix [for]="datePickerStartDate"></mat-datepicker-toggle>
+                <mat-datepicker #datePickerStartDate></mat-datepicker>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput [matDatepicker]="datePickerEndDate" [(ngModel)]="element.endDate"
+                  [ngModelOptions]="{standalone: true}">
+                <mat-datepicker-toggle matSuffix [for]="datePickerEndDate"></mat-datepicker-toggle>
+                <mat-datepicker #datePickerEndDate></mat-datepicker>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select [(ngModel)]="element.workUnitName">
+                  <mat-option></mat-option>
+                  @for (workUnit of workUnits; track workUnit) {
+                    <mat-option [value]="workUnit">
+                      {{ workUnit }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select  [(ngModel)]="element.materialDepositedTypeName">
+                  <mat-option></mat-option>
+                  @for (materialType of materialTypes; track materialType) {
+                    <mat-option [value]="materialType">
+                      {{materialType}}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <button (click)="onClickToDelete(element)">
+                <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+              </button>
+            </td>
+          } @else {
+            <td>
+              {{element.startDate | date}}
+            </td>
+            <td>
+              {{element.endDate | date}}
+            </td>
+            <td>
+              {{element.workUnitName}}
+            </td>
+            <td>
+              {{element.materialDepositedTypeName}}
+            </td>
+            <td>
+            </td>
+          }
+        </tr>
+      }
+      <tr>
+        <td class="no_border">
+          @if (canUpdatePlan) {
+            <button (click)="addRow()">
+              <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+            </button>
+          }
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
 </mat-card>

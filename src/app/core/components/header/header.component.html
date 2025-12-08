@@ -1,68 +1,86 @@
 <mat-toolbar color="primary" class="mat-elevation-z4">
-    <span>
-        <span class="logo">
-            <img src="./assets/gene.png" alt="Logo" width="60px" height="50px">
-        </span>
-        <span class="title">
-            <a routerLink="/">{{ title }}</a>
-        </span>
+  <span>
+    <span class="logo">
+      <img src="./assets/gene.png" alt="Logo" width="60px" height="50px">
     </span>
+    <span class="title">
+      <a routerLink="/">{{ title }}</a>
+    </span>
+  </span>
 
-    <div class="navigation">
+  <div class="navigation">
 
-        <div id="search_projects">
-            <button mat-menu-item routerLink="/search" routerLinkActive="active">Search</button>
-        </div>
-
-        <div id="projects" *ngIf="login">
-            <button routerLinkActive="active" mat-menu-item [matMenuTriggerFor]="project_menu">Projects</button>
-            <mat-menu #project_menu="matMenu">
-                <button mat-menu-item *ngIf="canSeeProjectList" routerLink="/projects" routerLinkActive="active">Managed
-                    Projects</button>
-                <button mat-menu-item routerLink="/projects/project-creation" routerLinkActive="active" *ngIf="login">Create a project</button>
-            </mat-menu>
-        </div>
-
-        <div id="geneList" *ngIf="login && false">
-            <button routerLinkActive="active" mat-menu-item [matMenuTriggerFor]="gene_list_menu">Gene List</button>
-            <mat-menu #gene_list_menu="matMenu">
-                <button mat-menu-item routerLink="/your-gene-list">Manage/View your Gene List</button>
-                <button mat-menu-item routerLink="/public-gene-lists">See public Gene Lists</button>
-            </mat-menu>
-        </div>
-
-        <div id="reports">
-            <button routerLink="/reports" mat-menu-item>
-                Reports
-            </button>
-        </div>
-
-        <div id="help">
-            <button mat-menu-item [matMenuTriggerFor]="documentation_menu">Help
-            </button>
-            <mat-menu #documentation_menu="matMenu">
-                <a *ngIf="apiDocumentationUrl" href= "{{ apiDocumentationUrl }}" target="_blank"
-                    mat-menu-item>API documentation</a>
-                <a href='../../../../assets/documentation/GenTaR_User_Manual.pdf' target="_blank"
-                   mat-menu-item>Website
-                    documentation</a>
-            </mat-menu>
-        </div>
-
+    <div id="search_projects">
+      <button mat-menu-item routerLink="/search" routerLinkActive="active">Search</button>
     </div>
 
-    <span class="spacer"></span>
+    @if (login) {
+      <div id="projects">
+        <button routerLinkActive="active" mat-menu-item [matMenuTriggerFor]="project_menu">Projects</button>
+        <mat-menu #project_menu="matMenu">
+          @if (canSeeProjectList) {
+            <button mat-menu-item routerLink="/projects" routerLinkActive="active">Managed
+            Projects</button>
+          }
+          @if (login) {
+            <button mat-menu-item routerLink="/projects/project-creation" routerLinkActive="active">Create a project</button>
+          }
+        </mat-menu>
+      </div>
+    }
 
-    <button class="login" mat-mini-fab routerLinkActive="active" [matMenuTriggerFor]="account_menu">
-        <mat-icon>person</mat-icon>
-    </button>
-    <mat-menu #account_menu="matMenu">
-        <button mat-flat-button [routerLink]="['./login']" routerLinkActive="active" *ngIf="!login">Sign
-            in</button>
-        <button mat-menu-item [routerLink]="['./edit_profile']" *ngIf="login">Edit your
-            profile</button>
-        <button mat-menu-item *ngIf="login && isAdmin" routerLink="/admin">Admin</button>
-        <button mat-menu-item *ngIf="login" routerLink="/login">Logout</button>
-    </mat-menu>
+    @if (login && false) {
+      <div id="geneList">
+        <button routerLinkActive="active" mat-menu-item [matMenuTriggerFor]="gene_list_menu">Gene List</button>
+        <mat-menu #gene_list_menu="matMenu">
+          <button mat-menu-item routerLink="/your-gene-list">Manage/View your Gene List</button>
+          <button mat-menu-item routerLink="/public-gene-lists">See public Gene Lists</button>
+        </mat-menu>
+      </div>
+    }
+
+    <div id="reports">
+      <button routerLink="/reports" mat-menu-item>
+        Reports
+      </button>
+    </div>
+
+    <div id="help">
+      <button mat-menu-item [matMenuTriggerFor]="documentation_menu">Help
+      </button>
+      <mat-menu #documentation_menu="matMenu">
+        @if (apiDocumentationUrl) {
+          <a href= "{{ apiDocumentationUrl }}" target="_blank"
+          mat-menu-item>API documentation</a>
+        }
+        <a href='../../../../assets/documentation/GenTaR_User_Manual.pdf' target="_blank"
+          mat-menu-item>Website
+        documentation</a>
+      </mat-menu>
+    </div>
+
+  </div>
+
+  <span class="spacer"></span>
+
+  <button class="login" mat-mini-fab routerLinkActive="active" [matMenuTriggerFor]="account_menu">
+    <mat-icon>person</mat-icon>
+  </button>
+  <mat-menu #account_menu="matMenu">
+    @if (!login) {
+      <button mat-flat-button [routerLink]="['./login']" routerLinkActive="active">Sign
+      in</button>
+    }
+    @if (login) {
+      <button mat-menu-item [routerLink]="['./edit_profile']">Edit your
+      profile</button>
+    }
+    @if (login && isAdmin) {
+      <button mat-menu-item routerLink="/admin">Admin</button>
+    }
+    @if (login) {
+      <button mat-menu-item routerLink="/login">Logout</button>
+    }
+  </mat-menu>
 
 </mat-toolbar>
