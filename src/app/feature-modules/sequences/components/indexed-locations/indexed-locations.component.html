@@ -1,128 +1,123 @@
 <table>
-    <tr class="header">
-        <th>Index</th>
-        <th>Chr</th>
-        <th>Start</th>
-        <th>Stop</th>
-        <th>Strand</th>
-        <th>Genome Build</th>
-        <th>Strain</th>
-        <th>Species</th>
-        <th></th>
-    </tr>
-    <ng-template ngFor let-sequenceLocation [ngForOf]="indexedSequence.sequence.sequenceLocations">
-        <div *ngIf="canUpdate; then editableRow else readOnlyRow">
-        </div>
-        <ng-template #editableRow>
-            <tr class="cell">
-                <td>
-                    <mat-form-field appearance="fill" class="short-field">
-                        <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
-                            [(ngModel)]="sequenceLocation.locationIndex">
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field appearance="fill" class="short-field">
-                        <input (keyup)="onChange(sequenceLocation)" matInput
-                            [(ngModel)]="sequenceLocation.location.chr">
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field appearance="fill" class="medium-short-field">
-                        <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
-                            [(ngModel)]="sequenceLocation.location.start">
-                    </mat-form-field>
-                </td>
-
-                <td>
-                    <mat-form-field appearance="fill" class="medium-short-field">
-                        <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
-                            [(ngModel)]="sequenceLocation.location.stop">
-                    </mat-form-field>
-
-                </td>
-
-                <td>
-                    <mat-form-field appearance="fill" class="short-field">
-                        <input (keyup)="onChange(sequenceLocation)" matInput
-                            [(ngModel)]="sequenceLocation.location.strand">
-                    </mat-form-field>
-                </td>
-
-                <td>
-                    <mat-form-field appearance="fill" class="medium-field">
-                        <input (keyup)="onChange(sequenceLocation)" matInput
-                            [(ngModel)]="sequenceLocation.location.genomeBuild">
-                    </mat-form-field>
-                </td>
-
-                <td>
-                    <mat-form-field appearance="fill" class="medium-large-field">
-                        <mat-select (selectionChange)="onChange(sequenceLocation)"
-                            [(value)]="sequenceLocation.location.strainName">
-                            <mat-option></mat-option>
-                            <mat-option *ngFor="let strain of strains" [value]="strain.name">
-                                {{strain.name}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-
-                <td>
-                    <mat-form-field appearance="fill" >
-                        <mat-select (selectionChange)="onChange(sequenceLocation)"
-                            [(value)]="sequenceLocation.location.speciesName">
-                            <mat-option></mat-option>
-                            <mat-option *ngFor="let speciesElement of species" [value]="speciesElement.name">
-                                {{speciesElement.name}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-
-                <td class="delete">
-                    <button class="iconbutton delete-button" mat-icon-button matTooltip="Click to Delete" color="warn"
-                        (click)="deleteRow(sequenceLocation)">
-                        <mat-icon aria-label="Delete">delete</mat-icon>
-                    </button>
-                </td>
-
-            </tr>
-        </ng-template>
-        <ng-template #readOnlyRow>
-            <tr>
-                <td>
-                    {{ sequenceLocation.locationIndex }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.chr }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.start }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.stop }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.strand }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.genomeBuild }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.strainName }}
-                </td>
-                <td>
-                    {{ sequenceLocation.location.speciesName }}
-                </td>
-
-            </tr>
-        </ng-template>
-    </ng-template>
-    <tr>
-        <td class="no_border"><button (click)="addRow()" [disabled]="false" *ngIf="canUpdate">
-                <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-            </button>
+  <tr class="header">
+    <th>Index</th>
+    <th>Chr</th>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Strand</th>
+    <th>Genome Build</th>
+    <th>Strain</th>
+    <th>Species</th>
+    <th></th>
+  </tr>
+  @for (sequenceLocation of indexedSequence.sequence.sequenceLocations; track sequenceLocation) {
+    @if (canUpdate) {
+      <tr class="cell">
+        <td>
+          <mat-form-field appearance="fill" class="short-field">
+            <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
+              [(ngModel)]="sequenceLocation.locationIndex">
+          </mat-form-field>
         </td>
-    </tr>
+        <td>
+          <mat-form-field appearance="fill" class="short-field">
+            <input (keyup)="onChange(sequenceLocation)" matInput
+              [(ngModel)]="sequenceLocation.location.chr">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" class="medium-short-field">
+            <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
+              [(ngModel)]="sequenceLocation.location.start">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" class="medium-short-field">
+            <input (keyup)="onChange(sequenceLocation)" appDigitOnly matInput
+              [(ngModel)]="sequenceLocation.location.stop">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" class="short-field">
+            <input (keyup)="onChange(sequenceLocation)" matInput
+              [(ngModel)]="sequenceLocation.location.strand">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" class="medium-field">
+            <input (keyup)="onChange(sequenceLocation)" matInput
+              [(ngModel)]="sequenceLocation.location.genomeBuild">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" class="medium-large-field">
+            <mat-select (selectionChange)="onChange(sequenceLocation)"
+              [(value)]="sequenceLocation.location.strainName">
+              <mat-option></mat-option>
+              @for (strain of strains; track strain) {
+                <mat-option [value]="strain.name">
+                  {{strain.name}}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field appearance="fill" >
+            <mat-select (selectionChange)="onChange(sequenceLocation)"
+              [(value)]="sequenceLocation.location.speciesName">
+              <mat-option></mat-option>
+              @for (speciesElement of species; track speciesElement) {
+                <mat-option [value]="speciesElement.name">
+                  {{speciesElement.name}}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+        <td class="delete">
+          <button class="iconbutton delete-button" mat-icon-button matTooltip="Click to Delete" color="warn"
+            (click)="deleteRow(sequenceLocation)">
+            <mat-icon aria-label="Delete">delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    } @else {
+      <tr>
+        <td>
+          {{ sequenceLocation.locationIndex }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.chr }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.start }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.stop }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.strand }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.genomeBuild }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.strainName }}
+        </td>
+        <td>
+          {{ sequenceLocation.location.speciesName }}
+        </td>
+      </tr>
+    }
+  }
+  <tr>
+    <td class="no_border">
+      @if (canUpdate) {
+        <button (click)="addRow()" [disabled]="false">
+          <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+        </button>
+      }
+    </td>
+  </tr>
 </table>

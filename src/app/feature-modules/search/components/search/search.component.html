@@ -1,18 +1,20 @@
-<div *ngIf="error" class="alert alert-danger">{{error}}</div>
+@if (error) {
+  <div class="alert alert-danger">{{error}}</div>
+}
 
 <button mat-button (click)="toogleShowFilters()">
   <mat-icon>filter_list</mat-icon> {{ filterVisible ? 'Hide Filters' : 'Show Filters' }}
 </button>
 
 <mat-sidenav-container>
-
   <mat-sidenav #drawer [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false && filterVisible">
-    <app-filter-container *ngIf="filtersDefinition && configurationLoaded" #filter [filters]="filtersDefinition"
-      [filtersInitialValues]="filtersInitialValues">
-    </app-filter-container>
+    @if (filtersDefinition && configurationLoaded) {
+      <app-filter-container #filter [filters]="filtersDefinition"
+        [filtersInitialValues]="filtersInitialValues">
+      </app-filter-container>
+    }
   </mat-sidenav>
-
   <mat-sidenav-content>
     <app-search-input (searchDefined)="onSearchDefined($event)"></app-search-input>
     <div class="table-controllers">
@@ -20,15 +22,18 @@
         <button mat-button (click)="downloadCsv()" color="primary">
           <mat-icon>save_alt</mat-icon> Download as CSV
         </button>
-        <mat-spinner style="margin:0 auto;" *ngIf="downloading" matSuffix mode="indeterminate" diameter=20>
-        </mat-spinner>
+        @if (downloading) {
+          <mat-spinner style="margin:0 auto;" matSuffix mode="indeterminate" diameter=20>
+          </mat-spinner>
+        }
       </div>
     </div>
     <div class="example-table-container">
-      <app-search-content *ngIf="configurationLoaded" [search]="currentSearch"
-        (errorMessageChanged)="onErrorMessageChanged($event)">
-      </app-search-content>
+      @if (configurationLoaded) {
+        <app-search-content [search]="currentSearch"
+          (errorMessageChanged)="onErrorMessageChanged($event)">
+        </app-search-content>
+      }
     </div>
   </mat-sidenav-content>
-
 </mat-sidenav-container>

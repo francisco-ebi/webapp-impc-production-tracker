@@ -1,108 +1,116 @@
 <mat-card appearance="outlined">
-  <mat-spinner style="margin:0 auto;" *ngIf="isLoading || isDownloading" matSuffix mode="indeterminate" diameter=100>
-  </mat-spinner>
+  @if (isLoading || isDownloading) {
+    <mat-spinner style="margin:0 auto;" matSuffix mode="indeterminate" diameter=100>
+    </mat-spinner>
+  }
   <mat-card-content>
-    <table *ngIf="!isLoading && currentConsortium">
-      <thead>
-        <tr>
-          <th>Gene(s)</th>
-          <th>Note</th>
-          <th>Types</th>
-          <th>Visible</th>
-          <th>Project Id</th>
-          <th>Project Summary Status</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let element of dataSource">
-          <td rowspan="calculateRowspan(element)">
-            <div *ngIf="checkEditable(); then editableGenes else readOnlyGenes">
-            </div>
-            <ng-template #editableGenes>
-              <app-autocomplete-gene-inputs [record]="element"></app-autocomplete-gene-inputs>
-            </ng-template>
-            <ng-template #readOnlyGenes>
-              {{ getGenesSymbols(element) }}
-            </ng-template>
-          </td>
-          <td rowspan="calculateRowspan(element)">
-            <div *ngIf="checkEditable(); then editableNote else readOnlyNote">
-            </div>
-            <ng-template #editableNote>
-              <mat-form-field appearance="fill" class="example-full-width">
-                <input (input)="noteChanged(element, $event.target.value)" matInput [(value)]="element.note">
-              </mat-form-field>
-            </ng-template>
-            <ng-template #readOnlyNote>
-              {{ element.note }}
-            </ng-template>
-          </td>
-
-          <td rowspan="calculateRowspan(element)">
-            <div *ngIf="checkEditable(); then editableType else readOnlyType">
-            </div>
-            <ng-template #editableType>
-              <mat-select multiple class="selectContent" [(ngModel)]="element.recordTypes" [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let recordType of filteredRecordTypes" [value]="recordType.name">
-                  {{ recordType.name }}
-                </mat-option>
-              </mat-select>
-            </ng-template>
-            <ng-template #readOnlyType>
-              {{ element.recordTypes }}
-            </ng-template>
-          </td>
-
-          <td rowspan="calculateRowspan(element)">
-            <div *ngIf="checkEditable(); then editableVisible else readOnlyVisible">
-            </div>
-            <ng-template #editableVisible>
-              <mat-checkbox [(ngModel)]="element.visible" [ngModelOptions]="{standalone: true}"></mat-checkbox>
-            </ng-template>
-            <ng-template #readOnlyVisible>
-              <mat-checkbox [(ngModel)]="element.visible" [disabled]=true [ngModelOptions]="{standalone: true}">
-              </mat-checkbox>
-            </ng-template>
-          </td>
-          <td>
-            <div *ngFor="let project of element.projects">
-              <div *ngIf="project">
-                <div><a target="_blank" routerLink="/projects/{{ project.tpn }}">{{ project.tpn }}</a></div>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div *ngFor="let project of element.projects">
-              <div *ngIf="project">
-                {{ project.summaryStatus }}
-              </div>
-            </div>
-          </td>
-          <td>
-            <button *ngIf="checkEditable()" (click)="onClickToDeleteElement(element)">
-              <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td class="no_border">
-            <button mat-fab *ngIf="checkEditable()" (click)="addRow()" color="accent" class="add-button">
-              <mat-icon>add</mat-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <mat-paginator *ngIf="this.currentConsortium" (page)="onPaginatorChanged(this.paginator)"
-      [length]="page.totalElements" [pageSize]="page.size" [pageSizeOptions]="[10,20,50,100,200]" id="server">
-    </mat-paginator>
+    @if (!isLoading && currentConsortium) {
+      <table>
+        <thead>
+          <tr>
+            <th>Gene(s)</th>
+            <th>Note</th>
+            <th>Types</th>
+            <th>Visible</th>
+            <th>Project Id</th>
+            <th>Project Summary Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (element of dataSource; track element) {
+            <tr>
+              <td rowspan="calculateRowspan(element)">
+                @if (checkEditable()) {
+                  <app-autocomplete-gene-inputs [record]="element"></app-autocomplete-gene-inputs>
+                } @else {
+                  {{ getGenesSymbols(element) }}
+                }
+              </td>
+              <td rowspan="calculateRowspan(element)">
+                @if (checkEditable()) {
+                  <mat-form-field appearance="fill" class="example-full-width">
+                    <input (input)="noteChanged(element, $event.target.value)" matInput [(value)]="element.note">
+                  </mat-form-field>
+                } @else {
+                  {{ element.note }}
+                }
+              </td>
+              <td rowspan="calculateRowspan(element)">
+                @if (checkEditable()) {
+                  <mat-select multiple class="selectContent" [(ngModel)]="element.recordTypes" [ngModelOptions]="{standalone: true}">
+                    @for (recordType of filteredRecordTypes; track recordType) {
+                      <mat-option [value]="recordType.name">
+                        {{ recordType.name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                } @else {
+                  {{ element.recordTypes }}
+                }
+              </td>
+              <td rowspan="calculateRowspan(element)">
+                @if (checkEditable()) {
+                  <mat-checkbox [(ngModel)]="element.visible" [ngModelOptions]="{standalone: true}"></mat-checkbox>
+                } @else {
+                  <mat-checkbox [(ngModel)]="element.visible" [disabled]=true [ngModelOptions]="{standalone: true}">
+                  </mat-checkbox>
+                }
+              </td>
+              <td>
+                @for (project of element.projects; track project) {
+                  <div>
+                    @if (project) {
+                      <div>
+                        <div><a target="_blank" routerLink="/projects/{{ project.tpn }}">{{ project.tpn }}</a></div>
+                      </div>
+                    }
+                  </div>
+                }
+              </td>
+              <td>
+                @for (project of element.projects; track project) {
+                  <div>
+                    @if (project) {
+                      <div>
+                        {{ project.summaryStatus }}
+                      </div>
+                    }
+                  </div>
+                }
+              </td>
+              <td>
+                @if (checkEditable()) {
+                  <button (click)="onClickToDeleteElement(element)">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+          <tr>
+            <td class="no_border">
+              @if (checkEditable()) {
+                <button mat-fab (click)="addRow()" color="accent" class="add-button">
+                  <mat-icon>add</mat-icon>
+                </button>
+              }
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    }
+    @if (this.currentConsortium) {
+      <mat-paginator (page)="onPaginatorChanged(this.paginator)"
+        [length]="page.totalElements" [pageSize]="page.size" [pageSizeOptions]="[10,20,50,100,200]" id="server">
+      </mat-paginator>
+    }
   </mat-card-content>
-
-  <mat-card-actions *ngIf="checkEditable()">
-    <button [disabled]='!checkIfChanged() || this.isLoading' (click)="updateLists()" mat-raised-button
-      color="primary">Save
+  @if (checkEditable()) {
+    <mat-card-actions>
+      <button [disabled]='!checkIfChanged() || this.isLoading' (click)="updateLists()" mat-raised-button
+        color="primary">Save
       Changes</button>
-  </mat-card-actions>
+    </mat-card-actions>
+  }
 </mat-card>

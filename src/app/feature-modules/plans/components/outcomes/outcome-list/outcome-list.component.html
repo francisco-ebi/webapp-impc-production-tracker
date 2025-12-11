@@ -1,19 +1,26 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Production outcomes</mat-card-subtitle>
-    <mat-card-content>
-        <div *ngIf="outcomes">
-            <div *ngFor="let outcome of outcomes">
-                <app-outcome-summary [outcome]="outcome" [canUpdate]="canUpdate"></app-outcome-summary>
-            </div>
-        </div>
-        <div *ngIf="outcomes?.length === 1 && (attemptType === 'es cell allele modification' || attemptType === 'crispr allele modification' || attemptType === 'es cell'); then NoAdd; else add"></div>
-        <ng-template #NoAdd>
-          <div class="alert alert-warning">You can not create an outcome in current state</div>
-        </ng-template>
-        <ng-template #add>
-          <div *ngIf="!canUpdate" class="alert alert-warning">You can not create an outcome in current state</div>
-            <a routerLink="/projects/{{ tpn }}/plans/{{ pin }}/outcome-creation"><button class="create-button"
-                mat-raised-button color="primary" *ngIf="canUpdate">Add Outcome</button></a>
-        </ng-template>
-    </mat-card-content>
+  <mat-card-subtitle>Production outcomes</mat-card-subtitle>
+  <mat-card-content>
+    @if (outcomes) {
+      <div>
+        @for (outcome of outcomes; track outcome) {
+          <div>
+            <app-outcome-summary [outcome]="outcome" [canUpdate]="canUpdate"></app-outcome-summary>
+          </div>
+        }
+      </div>
+    }
+    @if (outcomes?.length === 1 && (attemptType === 'es cell allele modification' || attemptType === 'crispr allele modification' || attemptType === 'es cell')) {
+      <div class="alert alert-warning">You can not create an outcome in current state</div>
+    } @else {
+      @if (!canUpdate) {
+        <div class="alert alert-warning">You can not create an outcome in current state</div>
+      }
+      <a routerLink="/projects/{{ tpn }}/plans/{{ pin }}/outcome-creation">
+        @if (canUpdate) {
+          <button class="create-button" mat-raised-button color="primary">Add Outcome</button>
+      }
+      </a>
+    }
+  </mat-card-content>
 </mat-card>
