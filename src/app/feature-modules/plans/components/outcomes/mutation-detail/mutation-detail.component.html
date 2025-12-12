@@ -127,10 +127,7 @@
       </app-insertion-sequence>
 
 
-      <div style="
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  border-radius: 3px; ">
+      <div class="deletionCoordinatesWrapper">
         <div style="width: 83%; font-weight: bold; float: left;">
           Deletion Coordinates And Targeted Exons
         </div>
@@ -138,11 +135,8 @@
           GENECODE version: M37
         </div>
         <br>
-
         <br>
-
         <div style="display: flex; justify-content: space-between; align-items: center;">
-
           <!-- Left side: buttons -->
           <div style="display: flex; gap: 10px; align-items: center;">
             <button
@@ -152,7 +146,6 @@
               color="primary">
               Enable Edit
             </button>
-
             <button
               *ngIf="editCoordinatesChecked"
               (click)="onCancelEditCoordinates($event)"
@@ -161,14 +154,12 @@
               Cancel
             </button>
           </div>
-
           <!-- Right side: label -->
           <label style="background-color: #FFCC33; padding: 10px 10px; border-radius: 4px; font-size: 01em;" *ngIf="mutation.isDeletionCoordinatesUpdatedManually">
            Manually Updated
           </label>
 
         </div>
-
         <form [formGroup]="form">
           <div class="radio-wrapper">
             <mat-radio-group formControlName="cb">
@@ -193,16 +184,12 @@
                                   [editCoordinatesChecked]="editCoordinatesChecked"
                                   (coordinatesDeleted)="onDeleteDeletionCoordinates($event)"
         >
-
         </app-deletion-coordinates>
         <br>
-
         <app-canonical-targeted-exons [mutation]="mutation"></app-canonical-targeted-exons>
         <br>
-      <app-targeted-exons [mutation]="mutation"></app-targeted-exons>
-      <br>
-
-
+        <app-targeted-exons [mutation]="mutation"></app-targeted-exons>
+        <br>
       </div>
       <br>
       <br>
@@ -217,7 +204,6 @@
                 </textarea>
       </mat-form-field>
       <br>
-
       <label for="qcNote">QC Note:</label>
       <mat-form-field appearance="fill" class="textarea-full-width">
                 <textarea matInput
@@ -229,7 +215,6 @@
                 </textarea>
       </mat-form-field>
       <br>
-
       <app-qc-results class="qcResultsSection" [mutation]="mutation" [canUpdate]="canUpdate">
       </app-qc-results>
     </td>
