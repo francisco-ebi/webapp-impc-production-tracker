@@ -177,8 +177,8 @@
                                 </mat-form-field>
                             </td>
 
-                            <div *ngIf="sameConcentrationForAll; then sameConcentrationForAllTemplate else individualConcentrationTemplate "></div>
-                            <ng-template #sameConcentrationForAllTemplate>
+                            <div *ngIf="sameConcentrationForAll; then sameConcentrationForAllEditTemplate else individualConcentrationTemplate "></div>
+                            <ng-template #sameConcentrationForAllEditTemplate>
                                 <td *ngIf="isFirst" [attr.rowspan]="this.crisprAttempt.guides.length">
                                     <mat-form-field appearance="fill" class="mediumShort">
                                         <input matInput formControlName="groupConcentration" (keyup)="onGroupConcentrationChanged()">
