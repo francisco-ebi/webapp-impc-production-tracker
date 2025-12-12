@@ -177,7 +177,7 @@
                                 </mat-form-field>
                             </td>
 
-                            <div *ngIf="sameConcentrationForAll; then sameConcentrationForAllEditTemplate else individualConcentrationTemplate "></div>
+                            <div *ngIf="sameConcentrationForAll; then sameConcentrationForAllEditTemplate else individualConcentrationEditTemplate "></div>
                             <ng-template #sameConcentrationForAllEditTemplate>
                                 <td *ngIf="isFirst" [attr.rowspan]="this.crisprAttempt.guides.length">
                                     <mat-form-field appearance="fill" class="mediumShort">
@@ -185,7 +185,7 @@
                                     </mat-form-field>
                                 </td>
                             </ng-template>
-                            <ng-template #individualConcentrationTemplate>
+                            <ng-template #individualConcentrationEditTemplate>
                                 <td>
                                     <div [formGroup]="concentrationForm">
                                         <mat-form-field appearance="fill" class="mediumShort">
