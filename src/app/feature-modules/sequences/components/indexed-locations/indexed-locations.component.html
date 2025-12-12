@@ -52,7 +52,7 @@
         <td>
           <mat-form-field appearance="fill" class="medium-large-field">
             <mat-select (selectionChange)="onChange(sequenceLocation)"
-              [(value)]="sequenceLocation.location.strainName">
+              [(value)]="sequenceLocation.location.strain.name">
               <mat-option></mat-option>
               @for (strain of strains; track strain) {
                 <mat-option [value]="strain.name">
@@ -63,7 +63,8 @@
           </mat-form-field>
         </td>
         <td>
-          <mat-form-field appearance="fill" >
+          Species name select placeholder
+          <!--<mat-form-field appearance="fill" >
             <mat-select (selectionChange)="onChange(sequenceLocation)"
               [(value)]="sequenceLocation.location.speciesName">
               <mat-option></mat-option>
@@ -73,7 +74,7 @@
                 </mat-option>
               }
             </mat-select>
-          </mat-form-field>
+          </mat-form-field>-->
         </td>
         <td class="delete">
           <button class="iconbutton delete-button" mat-icon-button matTooltip="Click to Delete" color="warn"
@@ -103,10 +104,11 @@
           {{ sequenceLocation.location.genomeBuild }}
         </td>
         <td>
-          {{ sequenceLocation.location.strainName }}
+          {{ sequenceLocation.location.strain.name }}
         </td>
         <td>
-          {{ sequenceLocation.location.speciesName }}
+          Species name placeholder
+          <!--{{ sequenceLocation.location.species.name }}-->
         </td>
       </tr>
     }

@@ -12,7 +12,7 @@
           <tr>
             <td>
               <mat-form-field appearance="fill">
-                <mat-select [(ngModel)]="reagent.reagentName">
+                <mat-select [(ngModel)]="reagent.name">
                   <mat-option></mat-option>
                   @for (reagentName of reagentNames; track reagentName) {
                     <mat-option [value]="reagentName.name">
@@ -38,7 +38,7 @@
         } @else {
           <tr>
             <td>
-              {{ reagent.reagentName || "Not defined" }}
+              {{ reagent.name || "Not defined" }}
             </td>
             <td>
               {{ reagent.concentration || "Not defined" }}
