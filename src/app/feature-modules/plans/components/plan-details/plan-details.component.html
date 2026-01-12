@@ -14,7 +14,6 @@
       {{ plan.geneSymbol }}
       <div class="separation"></div>
 
-
       <label for="typeName">Plan Type:</label>
       {{ plan.typeName }}
       <div class="separation"></div>
@@ -35,43 +34,39 @@
       {{ plan.workGroupName || 'Not defined' }}
       <div class="separation"></div>
 
-      <div *ngIf="canUpdatePlan; then funderEditable else funderReadOnly"></div>
-      <ng-template #funderEditable>
+      @if (canUpdatePlan) {
         <label for="funders">Funders:</label>
         <mat-form-field appearance="fill">
           <mat-select multiple id="funderNames" (blur)="onTouched()" formControlName="funderNames" (selectionChange)="fundersChanged($event)">
-              <mat-option *ngFor="let funder of filteredFundersByWorkGroup" [value]="funder.name">
-                  {{ funder.name }}
+            @for (funder of filteredFundersByWorkGroup; track funder) {
+              <mat-option [value]="funder.name">
+                {{ funder.name }}
               </mat-option>
+            }
           </mat-select>
         </mat-form-field>
-      </ng-template>
-      <ng-template #funderReadOnly>
+      } @else {
         <label for="funderNames">Funders:</label>
         {{ plan.funderNames || 'Not defined' }}
-      </ng-template>
-
+      }
       <div class="separation"></div>
       <br>
-
       <label for="comment">Comment:</label>
-      <div *ngIf="canUpdatePlan; then commentEditable else commentReadOnly"></div>
-      <ng-template #commentEditable>
-          <mat-form-field appearance="fill" class="example-full-width">
-            <textarea matInput
-                      formControlName="comment"
-                      class="form-control"
-                      (blur)="onTouched()"
-                      (change)="onCommentChange($event.target.value)">
-            </textarea>
-          </mat-form-field>
-      </ng-template>
-      <ng-template #commentReadOnly>
+      @if (canUpdatePlan) {
+        <mat-form-field appearance="fill" class="example-full-width">
+          <textarea matInput
+            formControlName="comment"
+            class="form-control"
+            (blur)="onTouched()"
+            (change)="onCommentChange($event.target.value)">
+          </textarea>
+        </mat-form-field>
+      } @else {
         <mat-form-field appearance="fill">
-            <textarea matInput readonly [(value)]="plan.comment"></textarea>
+          <textarea matInput readonly [(value)]="plan.comment"></textarea>
         </mat-form-field>
         <br>
-      </ng-template>
+      }
     </mat-card-content>
   </mat-card>
 </ng-container>

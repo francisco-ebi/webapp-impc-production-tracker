@@ -1,67 +1,62 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Nucleases</mat-card-subtitle>
-    <mat-card-content>
-        <table class="mat-elevation-z8">
-            <tr>
-                <th>Type *</th>
-                <th>Class *</th>
-                <th>Concentration (ng/µl)</th>
-                <th></th>
+  <mat-card-subtitle>Nucleases</mat-card-subtitle>
+  <mat-card-content>
+    <table class="mat-elevation-z8">
+      <tr>
+        <th>Type *</th>
+        <th>Class *</th>
+        <th>Concentration (ng/µl)</th>
+        <th></th>
+      </tr>
+      @for (nuclease of dataSource; track nuclease) {
+        @if (canUpdatePlan) {
+          <tr>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select [(value)]="nuclease.typeName">
+                  <mat-option></mat-option>
+                  @for (nucleaseType of nucleaseTypes; track nucleaseType) {
+                    <mat-option [value]="nucleaseType.name">
+                      {{ nucleaseType.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select [(value)]="nuclease.className">
+                  <mat-option></mat-option>
+                  @for (nucleaseClase of nucleaseClases; track nucleaseClase) {
+                    <mat-option [value]="nucleaseClase.name">
+                      {{ nucleaseClase.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput appDigitOnly decimal="true" [ngClass]="{'required': concentration.invalid}" name="concentration"
+                  #concentration="ngModel" [(ngModel)]="nuclease.concentration"
+                  [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </td>
             </tr>
-            <ng-template ngFor let-nuclease [ngForOf]="dataSource">
-                <div *ngIf="canUpdatePlan; then editableRow else readOnlyRow">
-                </div>
-                <ng-template #editableRow>
-                    <tr>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select [(value)]="nuclease.typeName">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let nucleaseType of nucleaseTypes" [value]="nucleaseType.name">
-                                        {{ nucleaseType.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select [(value)]="nuclease.className">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let nucleaseClase of nucleaseClases" [value]="nucleaseClase.name">
-                                        {{ nucleaseClase.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput appDigitOnly decimal="true" [ngClass]="{'required': concentration.invalid}" name="concentration"	
-                                #concentration="ngModel" [(ngModel)]="nuclease.concentration"
-                                
-                                [ngModelOptions]="{standalone: true}">	
-                            </mat-form-field>
-                        </td>
-
-                    </tr>
-
-                </ng-template>
-                <ng-template #readOnlyRow>
-                    <tr>
-                        <td>
-                            {{ nuclease.typeName || "Not defined" }}
-                        </td>
-                        <td>
-                            {{ nuclease.className || "Not defined" }}
-                        </td>
-                        <td>
-                            {{ nuclease.concentration || "Not defined" }}	
-                          </td>
-
-                    </tr>
-                </ng-template>
-            </ng-template>
-
-        </table>
-
-    </mat-card-content>
+          } @else {
+          <tr>
+            <td>
+              {{ nuclease.typeName || "Not defined" }}
+            </td>
+            <td>
+              {{ nuclease.className || "Not defined" }}
+            </td>
+            <td>
+              {{ nuclease.concentration || "Not defined" }}
+            </td>
+          </tr>
+        }
+      }
+    </table>
+  </mat-card-content>
 </mat-card>

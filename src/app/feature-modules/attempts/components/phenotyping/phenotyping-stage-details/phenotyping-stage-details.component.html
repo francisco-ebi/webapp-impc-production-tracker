@@ -1,142 +1,129 @@
 <mat-card appearance="outlined">
-    <mat-card-content>
-        <a [routerLink]="['history']">History</a>
-        <div>
-            <app-go-back></app-go-back>
-        </div>
-    </mat-card-content>
+  <mat-card-content>
+    <a [routerLink]="['history']">History</a>
+    <div>
+      <app-go-back></app-go-back>
+    </div>
+  </mat-card-content>
 </mat-card>
 <mat-card appearance="outlined" class="big-section">
-    <mat-card-content>
-        <form [formGroup]="phenotypingStageForm">
-
-            <div *ngIf="!isNew">
-                <label for="psn">Phenotyping Stage id:</label>
-                {{ phenotypingStage.psn }}
-                <div class="separation"></div>
-            </div>
-
-            <label for="pin">Phenotyping Plan Id:</label>
-            <a routerLink="/projects/{{ tpn }}/phenotyping-plan/{{pin}}">{{ pin }}</a>
-            <div class="separation"></div>
-
-          <label for="geneSymbol">Gene Symbol:</label>
-          {{ geneSymbol }}
+  <mat-card-content>
+    <form [formGroup]="phenotypingStageForm">
+      @if (!isNew) {
+        <div>
+          <label for="psn">Phenotyping Stage id:</label>
+          {{ phenotypingStage.psn }}
           <div class="separation"></div>
+        </div>
+      }
+      <label for="pin">Phenotyping Plan Id:</label>
+      <a routerLink="/projects/{{ tpn }}/phenotyping-plan/{{pin}}">{{ pin }}</a>
+      <div class="separation"></div>
 
-            <div *ngIf="canUpdate; then editable else readOnly"></div>
+      <label for="geneSymbol">Gene Symbol:</label>
+      {{ geneSymbol }}
+      <div class="separation"></div>
 
-            <ng-template #editable>
-
-                <div *ngIf="isNew; then editableType else readOnlyType"></div>
-
-                <ng-template #editableType>
-                    <label for="phenotypingTypeName">Type:</label>
-                    <mat-form-field appearance="fill">
-                        <mat-select [(ngModel)]="phenotypingStage.phenotypingTypeName" [ngModelOptions]="{standalone: true}">
-                            <mat-option></mat-option>
-                            <mat-option
-                                *ngFor="let phenotypingStagesType of filteredPhenotypingStagesTypesByAttemptTypes"
-                                [value]="phenotypingStagesType.name">
-                                {{ phenotypingStagesType.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <br>
-                </ng-template>
-
-                <ng-template #readOnlyType>
-                    <label for="phenotypingTypeName">Type:</label>
-                    {{ phenotypingStage.phenotypingTypeName }}
-                    <div class="separation"></div>
-                </ng-template>
-
-                <div *ngIf="!isNew">
-                    <label for="phenotypingExternalRef">Phenotyping External Reference (Colony or Specimen id):</label>
-                    <br>
-                    {{ phenotypingStage.phenotypingExternalRef }}
-                    <div class="separation"></div>
-                </div>
-
-                <label for="phenotypingExperimentsStarted">Phenotyping Experiments Started:</label>
-                <mat-form-field appearance="fill" id="phenotypingExperimentsStarted">
-                    <input matInput [matDatepicker]="phenotypingExperimentsStarted"
-                        [(ngModel)]="phenotypingStage.phenotypingExperimentsStarted"
-                        [ngModelOptions]="{standalone: true}">
-                    <mat-datepicker-toggle matSuffix [for]="phenotypingExperimentsStarted"></mat-datepicker-toggle>
-                    <mat-datepicker #phenotypingExperimentsStarted></mat-datepicker>
-                </mat-form-field>
-                <br>
-
-                <label for="initialDataReleaseDate">Initial Data Release date:</label>
-                <mat-form-field appearance="fill" id="initialDataReleaseDate">
-                    <input matInput [matDatepicker]="initialDataReleaseDate"
-                        [(ngModel)]="phenotypingStage.initialDataReleaseDate"
-                        [ngModelOptions]="{standalone: true}">
-                    <mat-datepicker-toggle matSuffix [for]="initialDataReleaseDate"></mat-datepicker-toggle>
-                    <mat-datepicker #initialDataReleaseDate></mat-datepicker>
-                </mat-form-field>
-                <br>
-            </ng-template>
-
-            <ng-template #readOnly>
-                <label for="phenotypingTypeName">Type:</label>
-                {{ phenotypingStage.phenotypingTypeName }}
-                <div class="separation"></div>
-
-                <label for="phenotypingExternalRef">Phenotyping External Reference (Colony or Specimen id):</label>
-                <br>
+      @if (canUpdate) {
+        @if (isNew) {
+          <label for="phenotypingTypeName">Type:</label>
+          <mat-form-field appearance="fill">
+            <mat-select [(ngModel)]="phenotypingStage.phenotypingTypeName" [ngModelOptions]="{standalone: true}">
+              <mat-option></mat-option>
+              @for (phenotypingStagesType of filteredPhenotypingStagesTypesByAttemptTypes; track phenotypingStagesType) {
+                <mat-option
+                  [value]="phenotypingStagesType.name">
+                  {{ phenotypingStagesType.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <br>
+          } @else {
+            <label for="phenotypingTypeName">Type:</label>
+            {{ phenotypingStage.phenotypingTypeName }}
+            <div class="separation"></div>
+          }
+          @if (!isNew) {
+            <div>
+              <label for="phenotypingExternalRef">Phenotyping External Reference (Colony or Specimen id):</label>
+              <br>
                 {{ phenotypingStage.phenotypingExternalRef }}
                 <div class="separation"></div>
-
-                <label for="phenotypingExperimentsStarted">Phenotyping Experiments Started:</label>
-                <mat-form-field appearance="fill">
-                    <input matInput readonly [(value)]="phenotypingStage.phenotypingExperimentsStarted" />
-                </mat-form-field>
-                <br>
-
-                <label for="initialDataReleaseDate">Initial Data Release date:</label>
-                <mat-form-field appearance="fill">
-                    <input matInput readonly [(value)]="phenotypingStage.initialDataReleaseDate" />
-                </mat-form-field>
-                <br>
-            </ng-template>
-
-        </form>
-
-        <div *ngIf="canUpdate; then statusTransition else status"></div>
-
-        <ng-template #statusTransition>
-            <app-status-transition *ngIf="phenotypingStage.statusTransition"
-                [statusTransition]="phenotypingStage.statusTransition" [canUpdate]="canUpdate">
-            </app-status-transition>
-        </ng-template>
-
-        <ng-template #status>
-            <label for="statusName">Current Status:</label>
-            {{ phenotypingStage.statusName }}
-            <div class="separation"></div>
-        </ng-template>
-
-        <div *ngIf="!isNew">
-            <app-status-date [statusDates]="phenotypingStage.statusDates"
-                [title]='"Phenotyping Stage Status History"'></app-status-date>
-        </div>
-
-        <app-tissue-distribution-centre [phenotypingStage]=phenotypingStage [canUpdatePlan]=canUpdate>
-        </app-tissue-distribution-centre>
-
-    </mat-card-content>
-</mat-card>
-
-<mat-card appearance="outlined">
-    <mat-card-content>
-        <button mat-raised-button color="primary" [disabled]="!enableUpdateButton()" *ngIf="canUpdate"
-            (click)="updateOrCreate()">{{ isNew ? 'Create' : 'Update' }}</button>
+              </div>
+            }
+        <label for="phenotypingExperimentsStarted">Phenotyping Experiments Started:</label>
+        <mat-form-field appearance="fill" id="phenotypingExperimentsStarted">
+          <input matInput [matDatepicker]="phenotypingExperimentsStarted"
+                [(ngModel)]="phenotypingStage.phenotypingExperimentsStarted"
+                [ngModelOptions]="{standalone: true}">
+          <mat-datepicker-toggle matSuffix [for]="phenotypingExperimentsStarted"></mat-datepicker-toggle>
+          <mat-datepicker #phenotypingExperimentsStarted></mat-datepicker>
+        </mat-form-field>
         <br>
-        <span style="font-size: 12px; ">* required fields</span>
+        <label for="initialDataReleaseDate">Initial Data Release date:</label>
+        <mat-form-field appearance="fill" id="initialDataReleaseDate">
+          <input matInput [matDatepicker]="initialDataReleaseDate"
+            [(ngModel)]="phenotypingStage.initialDataReleaseDate"
+            [ngModelOptions]="{standalone: true}">
+          <mat-datepicker-toggle matSuffix [for]="initialDataReleaseDate"></mat-datepicker-toggle>
+          <mat-datepicker #initialDataReleaseDate></mat-datepicker>
+        </mat-form-field>
+        <br>
+      } @else {
+        <label for="phenotypingTypeName">Type:</label>
+        {{ phenotypingStage.phenotypingTypeName }}
         <div class="separation"></div>
-        <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-    </mat-card-content>
+        <label for="phenotypingExternalRef">Phenotyping External Reference (Colony or Specimen id):</label>
+        <br>
+        {{ phenotypingStage.phenotypingExternalRef }}
+        <div class="separation"></div>
+        <label for="phenotypingExperimentsStarted">Phenotyping Experiments Started:</label>
+        <mat-form-field appearance="fill">
+          <input matInput readonly [(value)]="phenotypingStage.phenotypingExperimentsStarted" />
+        </mat-form-field>
+        <br>
+        <label for="initialDataReleaseDate">Initial Data Release date:</label>
+        <mat-form-field appearance="fill">
+          <input matInput readonly [(value)]="phenotypingStage.initialDataReleaseDate" />
+        </mat-form-field>
+        <br>
+      }
+    </form>
+
+    @if (canUpdate) {
+      @if (phenotypingStage.statusTransition) {
+        <app-status-transition
+          [statusTransition]="phenotypingStage.statusTransition" [canUpdate]="canUpdate">
+        </app-status-transition>
+      }
+    } @else {
+      <label for="statusName">Current Status:</label>
+      {{ phenotypingStage.statusName }}
+      <div class="separation"></div>
+    }
+    @if (!isNew) {
+      <div>
+        <app-status-date [statusDates]="phenotypingStage.statusDates" [title]='"Phenotyping Stage Status History"'></app-status-date>
+      </div>
+    }
+    <app-tissue-distribution-centre [phenotypingStage]=phenotypingStage [canUpdatePlan]=canUpdate>
+    </app-tissue-distribution-centre>
+
+  </mat-card-content>
 </mat-card>
+<mat-card appearance="outlined">
+  <mat-card-content>
+    @if (canUpdate) {
+      <button mat-raised-button color="primary" [disabled]="!enableUpdateButton()"
+      (click)="updateOrCreate()">{{ isNew ? 'Create' : 'Update' }}</button>
+    }
+    <br>
+      <span style="font-size: 12px; ">* required fields</span>
+      <div class="separation"></div>
+      @if (error) {
+        <div class="alert alert-danger">{{error}}</div>
+      }
+    </mat-card-content>
+  </mat-card>
 

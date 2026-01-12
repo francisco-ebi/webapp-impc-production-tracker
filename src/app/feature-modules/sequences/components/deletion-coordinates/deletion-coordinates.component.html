@@ -4,77 +4,72 @@
       <mat-panel-title style="font-weight: bold">Deletion Coordinates</mat-panel-title>
     </mat-expansion-panel-header>
 
-
     <table class="mat-elevation-z8">
       <thead>
-      <tr>
-        <th>Chr</th>
-        <th>Start</th>
-        <th>Stop</th>
-        <th>Deletion Size</th>
-      </tr>
+        <tr>
+          <th>Chr</th>
+          <th>Start</th>
+          <th>Stop</th>
+          <th>Deletion Size</th>
+        </tr>
       </thead>
       <tbody>
-      <ng-container *ngFor="let molecularMutationDeletion of mutation.molecularMutationDeletions">
-        <div *ngIf="!editCoordinatesChecked || !canUpdate; then readOnlyFields else editableFields"></div>
-        <ng-template #editableFields>
-          <tr>
-            <td>
-              <mat-form-field appearance="fill" class="small">
-                <input matInput [(ngModel)]="molecularMutationDeletion.chr" [ngModelOptions]="{standalone: true}">
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field appearance="fill" class="small">
-                <input
-                  matInput
-                  [ngModel]="molecularMutationDeletion.start + 1"
-                  (ngModelChange)="onStartChange($event, molecularMutationDeletion)"
-                  [ngModelOptions]="{standalone: true}">              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field appearance="fill" class="small">
-                <input matInput [(ngModel)]="molecularMutationDeletion.stop" [ngModelOptions]="{standalone: true}">
-              </mat-form-field>
-            </td>
-
-            <td>
-              <mat-form-field appearance="fill" class="small">
-                <input matInput [(ngModel)]="molecularMutationDeletion.size" [ngModelOptions]="{standalone: true}">
-              </mat-form-field>
-            </td>
-            <td>
-              <button type="button" (click)="deleteInsertedCoordinates(molecularMutationDeletion)">
-                <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template #readOnlyFields>
-          <tr>
-            <td>
-              {{molecularMutationDeletion.chr }}
-            </td>
-            <td>
-              {{molecularMutationDeletion.start + 1}}
-            </td>
-            <td>
-              {{molecularMutationDeletion.stop}}
-            </td>
-            <td>
-              {{molecularMutationDeletion.size }}
-            </td>
-
-          </tr>
-        </ng-template>
-
-      </ng-container>
-
-          <button  class="create-button" mat-raised-button (click)="addDeletionCoordinates()" color="primary" type="button"
-                   *ngIf="editCoordinatesChecked && canUpdate;">Add Coordinate</button>
+        @for (molecularMutationDeletion of mutation.molecularMutationDeletions; track molecularMutationDeletion) {
+          @if (!editCoordinatesChecked || !canUpdate) {
+            <tr>
+              <td>
+                {{molecularMutationDeletion.chr }}
+              </td>
+              <td>
+                {{molecularMutationDeletion.start + 1}}
+              </td>
+              <td>
+                {{molecularMutationDeletion.stop}}
+              </td>
+              <td>
+                {{molecularMutationDeletion.size }}
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td>
+                <mat-form-field appearance="fill" class="small">
+                  <input matInput [(ngModel)]="molecularMutationDeletion.chr" [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill" class="small">
+                  <input
+                    matInput
+                    [ngModel]="molecularMutationDeletion.start + 1"
+                    (ngModelChange)="onStartChange($event, molecularMutationDeletion)"
+                    [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill" class="small">
+                  <input matInput [(ngModel)]="molecularMutationDeletion.stop" [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill" class="small">
+                  <input matInput [(ngModel)]="molecularMutationDeletion.size" [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </td>
+              <td>
+                <button type="button" (click)="deleteInsertedCoordinates(molecularMutationDeletion)">
+                  <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        }
+        @if (editCoordinatesChecked && canUpdate;) {
+          <button class="create-button" mat-raised-button (click)="addDeletionCoordinates()" color="primary" type="button"
+          >Add Coordinate</button>
+        }
       </tbody>
     </table>
-
   </mat-expansion-panel>
 </mat-accordion>
 <div class="separation"></div>

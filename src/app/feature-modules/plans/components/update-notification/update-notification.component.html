@@ -1,16 +1,19 @@
 <div class="1notifier__notification--success notifier__notification--material">
-    <div id="details" *ngIf=showDetails>
-        <p>The update was successful.</p>
-        <table>
-            <tr>
-                <th>Property</th>
-                <th>Change</th>
-            </tr>
-            <tr *ngFor="let detail of changeDetails.details">
-                <td> {{ formatField( detail.field) }} </td>
-                <td> {{ detail.oldValue }} => {{ detail.newValue }} </td>
-            </tr>
-        </table>
+  @if (showDetails) {
+    <div id="details">
+      <p>The update was successful.</p>
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Change</th>
+        </tr>
+        @for (detail of changeDetails.details; track $index) {
+          <tr>
+            <td> {{ formatField( detail.field) }} </td>
+            <td> {{ detail.oldValue }} => {{ detail.newValue }} </td>
+          </tr>
+        }
+      </table>
     </div>
-
+  }
 </div>

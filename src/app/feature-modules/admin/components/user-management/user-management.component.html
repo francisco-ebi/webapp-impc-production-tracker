@@ -3,7 +3,7 @@
 
     <mat-card-title>
       {{formTitle}}
-  </mat-card-title>
+    </mat-card-title>
 
     <form [formGroup]="signupForm"  class="my-form">
 
@@ -13,73 +13,89 @@
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Name</mat-label>
             <input matInput placeholder="Name" formControlName="name" [(value)]="user.name" required>
-            <mat-error *ngIf="f.name.invalid">{{ 'You must enter a value' }}</mat-error>
+            @if (f.name.invalid) {
+              <mat-error>{{ 'You must enter a value' }}</mat-error>
+            }
           </mat-form-field>
-          <mat-form-field appearance="fill" *ngIf="!this.updatingUser" class="full-width">
-            <mat-label>Password</mat-label>
-            <input type="password" matInput placeholder="Password" formControlName="password" required>
-            <mat-error *ngIf="f.password.invalid">{{ 'You must enter a value' }}</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="fill" *ngIf="this.updatingUser" class="full-width">
+          @if (!this.updatingUser) {
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Password</mat-label>
+              <input type="password" matInput placeholder="Password" formControlName="password" required>
+              @if (f.password.invalid) {
+                <mat-error>{{ 'You must enter a value' }}</mat-error>
+              }
+            </mat-form-field>
+          }
+          @if (this.updatingUser) {
+            <mat-form-field appearance="fill" class="full-width">
               <mat-label>New Password (left empty if not changing it)</mat-label>
               <input type="password" matInput placeholder="Password" formControlName="newPassword">
             </mat-form-field>
+          }
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Email</mat-label>
             <input matInput placeholder="Email" formControlName="email" [(value)]="user.email" [attr.disabled]="this.updatingUser" required>
-            <mat-error *ngIf="f.email.invalid">{{ getEmailErrorMessage() }}</mat-error>
+            @if (f.email.invalid) {
+              <mat-error>{{ getEmailErrorMessage() }}</mat-error>
+            }
           </mat-form-field>
-          <mat-checkbox *ngIf="adminUser" formControlName="isAdmin" [(value)]="user.isAdmin">Is Administrator?</mat-checkbox>
+          @if (adminUser) {
+            <mat-checkbox formControlName="isAdmin" [(value)]="user.isAdmin">Is Administrator?</mat-checkbox>
+          }
         </mat-card-content>
       </mat-card>
 
       <mat-card appearance="outlined">
         <mat-card-subtitle>Work unit association(s)</mat-card-subtitle>
         <mat-card-content>
-          <div *ngIf="adminUser; then sectionWorkUnitsWithRoles else sectionWorkUnitsWithoutRoles">
-          </div>
-          <ng-template #sectionWorkUnitsWithRoles>
-            <div class="content" *ngFor="let roleWorkUnit of roleWorkUnits">
-              <div class="container">
-                <div class="item item-1" fxFlex="40%">
-                  <mat-select placeholder="Work Unit" [(value)]="roleWorkUnit.workUnitName">
-                    <mat-option></mat-option>
-                    <mat-option *ngFor="let workUnit of workUnits" [value]="workUnit.name" required>
-                      {{workUnit.name}}
-                    </mat-option>
-                  </mat-select>
-                </div>
-                <div class="item item-2" fxFlex="40%">
-                  <mat-select placeholder="Role" [(value)]="roleWorkUnit.roleName">
-                    <mat-option></mat-option>
-                    <mat-option *ngFor="let role of roles" [value]="role.name">
-                      {{role.name}}
-                    </mat-option>
-                  </mat-select>
-                </div>
-                <div class="item item-3" fxFlex>
-                  <button (click)="deleteWorkUnitRole(roleWorkUnit)">
-                    <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
-                  </button>
+          @if (adminUser) {
+            @for (roleWorkUnit of roleWorkUnits; track roleWorkUnit) {
+              <div class="content">
+                <div class="container">
+                  <div class="item item-1" fxFlex="40%">
+                    <mat-select placeholder="Work Unit" [(value)]="roleWorkUnit.workUnitName">
+                      <mat-option></mat-option>
+                      @for (workUnit of workUnits; track workUnit) {
+                        <mat-option [value]="workUnit.name" required>
+                          {{workUnit.name}}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </div>
+                  <div class="item item-2" fxFlex="40%">
+                    <mat-select placeholder="Role" [(value)]="roleWorkUnit.roleName">
+                      <mat-option></mat-option>
+                      @for (role of roles; track role) {
+                        <mat-option [value]="role.name">
+                          {{role.name}}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </div>
+                  <div class="item item-3" fxFlex>
+                    <button (click)="deleteWorkUnitRole(roleWorkUnit)">
+                      <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
+            }
             <mat-card-actions>
               <button (click)="addWorkUnitRole()">
                 <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
               </button>
             </mat-card-actions>
-          </ng-template>
-          <ng-template #sectionWorkUnitsWithoutRoles>
+          } @else {
             <mat-form-field appearance="fill">
               <mat-label>Work Unit</mat-label>
               <mat-select [(value)]="selectedWorkUnits" multiple>
-                <mat-option *ngFor="let workUnit of workUnits" value="{{ workUnit.name }}">{{workUnit.name}}
-                </mat-option>
+                @for (workUnit of workUnits; track workUnit) {
+                  <mat-option value="{{ workUnit.name }}">{{workUnit.name}}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
-          </ng-template>
+          }
         </mat-card-content>
       </mat-card>
 
@@ -87,50 +103,54 @@
         <mat-card-subtitle>Consortium association(s)</mat-card-subtitle>
         <mat-card-content>
 
-          <div *ngIf="adminUser; then sectionConsortiaWithRoles else sectionConsortiaWithoutRoles">
-          </div>
-          <ng-template #sectionConsortiaWithRoles>
-            <div class="content" *ngFor="let roleConsortium of roleConsortia">
-              <div class="container">
-                <div class="item item-1" fxFlex="40%">
-                  <mat-select placeholder="Consortium" [(value)]="roleConsortium.consortiumName">
-                    <mat-option></mat-option>
-                    <mat-option *ngFor="let consortium of consortia" [value]="consortium.name" required>
-                      {{consortium.name}}
-                    </mat-option>
-                  </mat-select>
-                </div>
-                <div class="item item-2" fxFlex="40%">
-                  <mat-select placeholder="Role" [(value)]="roleConsortium.roleName">
-                    <mat-option></mat-option>
-                    <mat-option *ngFor="let role of roles" [value]="role.name">
-                      {{role.name}}
-                    </mat-option>
-                  </mat-select>
-                </div>
-                <div class="item item-3" fxFlex>
-                  <button (click)="deleteConsortiumRole(roleConsortium)">
-                    <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
-                  </button>
+          @if (adminUser) {
+            @for (roleConsortium of roleConsortia; track roleConsortium) {
+              <div class="content">
+                <div class="container">
+                  <div class="item item-1" fxFlex="40%">
+                    <mat-select placeholder="Consortium" [(value)]="roleConsortium.consortiumName">
+                      <mat-option></mat-option>
+                      @for (consortium of consortia; track consortium) {
+                        <mat-option [value]="consortium.name" required>
+                          {{consortium.name}}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </div>
+                  <div class="item item-2" fxFlex="40%">
+                    <mat-select placeholder="Role" [(value)]="roleConsortium.roleName">
+                      <mat-option></mat-option>
+                      @for (role of roles; track role) {
+                        <mat-option [value]="role.name">
+                          {{role.name}}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </div>
+                  <div class="item item-3" fxFlex>
+                    <button (click)="deleteConsortiumRole(roleConsortium)">
+                      <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
+            }
             <mat-card-actions>
               <button (click)="addConsortiumRole()">
                 <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
               </button>
             </mat-card-actions>
-          </ng-template>
-          <ng-template #sectionConsortiaWithoutRoles>
-              <mat-form-field appearance="fill">
-                  <mat-label>Consortium</mat-label>
-                  <mat-select [(value)]="selectedConsortia" multiple>
-                    <mat-option *ngFor="let consortium of consortia" value="{{ consortium.name }}">{{consortium.name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-          </ng-template>
+          } @else {
+            <mat-form-field appearance="fill">
+              <mat-label>Consortium</mat-label>
+              <mat-select [(value)]="selectedConsortia" multiple>
+                @for (consortium of consortia; track consortium) {
+                  <mat-option value="{{ consortium.name }}">{{consortium.name}}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
 
         </mat-card-content>
       </mat-card>
@@ -138,12 +158,14 @@
       <mat-card-actions>
         <button [disabled]='signupForm.invalid' (click)="onSubmit()" mat-raised-button color="primary"> {{ buttonText }} </button>
         <br>
-        <span style="font-size: 12px; ">* required fields</span>
-        <div class="separation"></div>
-        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-      </mat-card-actions>
+          <span style="font-size: 12px; ">* required fields</span>
+          <div class="separation"></div>
+          @if (error) {
+            <div class="alert alert-danger">{{ error }}</div>
+          }
+        </mat-card-actions>
 
-    </form>
-  </mat-card-content>
+      </form>
+    </mat-card-content>
 
-</mat-card>
+  </mat-card>
