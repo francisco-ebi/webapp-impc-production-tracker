@@ -165,13 +165,14 @@
                 color="primary">
                 Enable Edit
               </button>
-              <button
-                *ngIf="editCoordinatesChecked"
-                (click)="onCancelEditCoordinates($event)"
-                mat-raised-button
-                color="primary">
-                Cancel
-              </button>
+              @if (editCoordinatesChecked) {
+                <button
+                  (click)="onCancelEditCoordinates($event)"
+                  mat-raised-button
+                  color="primary">
+                  Cancel
+                </button>
+              }
             </div>
             <!-- Right side: label -->
             @if (mutation.isDeletionCoordinatesUpdatedManually) {
