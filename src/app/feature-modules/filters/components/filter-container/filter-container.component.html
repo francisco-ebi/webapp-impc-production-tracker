@@ -1,27 +1,39 @@
 <h3>Filter</h3>
 <div class="clear-filters-wrapper">
   Clear all
-    <button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilters()">
-        <mat-icon>close</mat-icon>
-    </button>
+  <button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilters()">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
-<form class="filter-form" *ngIf="filters" [formGroup]="filterForm">
-    <mat-expansion-panel class="sidenav-section" [expanded]="filter.expanded" *ngFor="let filter of filters">
+@if (filters) {
+  <form class="filter-form" [formGroup]="filterForm">
+    @for (filter of filters; track filter) {
+      <mat-expansion-panel class="sidenav-section" [expanded]="filter.expanded">
         <mat-expansion-panel-header>
-            <mat-panel-title>
-                <div [class.changed]="changed[filter.name]">{{ filter.title }} </div>
-            </mat-panel-title>
+          <mat-panel-title>
+            <div [class.changed]="changed[filter.name]">{{ filter.title }} </div>
+          </mat-panel-title>
         </mat-expansion-panel-header>
-        <mat-form-field appearance="fill" *ngIf="filter.type === filterType.text">
-            <mat-label *ngIf="filter.label">
+        @if (filter.type === filterType.text) {
+          <mat-form-field appearance="fill">
+            @if (filter.label) {
+              <mat-label>
                 {{ filter.label }}
-            </mat-label>
+              </mat-label>
+            }
             <input matInput placeholder="{{ filter.placeholder }}" formControlName="{{ filter.name }}">
-        </mat-form-field>
-        <mat-selection-list dense *ngIf="filter.type === filterType.checkboxes" formControlName="{{ filter.name }}">
-            <mat-list-option *ngFor="let value of filter.dataSource" color="primary" [value]="value.name">
+          </mat-form-field>
+        }
+        @if (filter.type === filterType.checkboxes) {
+          <mat-selection-list dense formControlName="{{ filter.name }}">
+            @for (value of filter.dataSource; track value) {
+              <mat-list-option color="primary" [value]="value.name">
                 {{ value.name }}
-            </mat-list-option>
-        </mat-selection-list>
-    </mat-expansion-panel>
-</form>
+              </mat-list-option>
+            }
+          </mat-selection-list>
+        }
+      </mat-expansion-panel>
+    }
+  </form>
+}

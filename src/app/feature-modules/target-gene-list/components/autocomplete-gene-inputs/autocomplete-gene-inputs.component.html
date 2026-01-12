@@ -1,23 +1,26 @@
 <mat-form-field appearance="fill" class="example-chip-list largeElement">
-    <mat-chip-grid #chipList>
-        <mat-chip-row *ngFor="let geneSymbol of getGenesNamesByElement()" (removed)="remove(geneSymbol)">
-            {{geneSymbol}}
-            <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip-row>
-        <input
-            #geneInput
-            [formControl]="genesCtrl"
-            [matAutocomplete]="auto"
-            (input)="onSearchChange($event.target.value)"
-            [matAutocomplete]="auto"
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            [matChipInputAddOnBlur]="true"
-            (matChipInputTokenEnd)="add($event)">
-    </mat-chip-grid>
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{option}}
-        </mat-option>
-    </mat-autocomplete>
+  <mat-chip-grid #chipList>
+    @for (geneSymbol of getGenesNamesByElement(); track geneSymbol) {
+      <mat-chip-row (removed)="remove(geneSymbol)">
+        {{geneSymbol}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip-row>
+    }
+    <input
+      #geneInput
+      [formControl]="genesCtrl"
+      [matAutocomplete]="auto"
+      (input)="onSearchChange($event.target.value)"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="true"
+      (matChipInputTokenEnd)="add($event)">
+  </mat-chip-grid>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    @for (option of filteredOptions | async; track option) {
+      <mat-option [value]="option">
+        {{option}}
+      </mat-option>
+    }
+  </mat-autocomplete>
 </mat-form-field>

@@ -1,77 +1,76 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Genotype Primers</mat-card-subtitle>
-    <mat-card-content>
-        <table class="mat-elevation-z8">
-            <tr>
-                <th>Name</th>
-                <th>Sequence</th>
-                <th>Start Coordinate</th>
-                <th>End Coordinate</th>
-                <th></th>
-            </tr>
-            <ng-template ngFor let-primer [ngForOf]="dataSource">
-                <div *ngIf="canUpdatePlan; then editableRow else readOnlyRow">
-                </div>
-                <ng-template #editableRow>
-                    <tr>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput [ngClass]="{'required': name.invalid}" name="name" #name="ngModel"
-                                    [(ngModel)]="primer.name" placeholder="Primer's name" (keyup)="onPrimerChanged(primer)"
-                                    [ngModelOptions]="{standalone: true}" required>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput [ngClass]="{'required': sequence.invalid, 'sequence_input':true}" name="sequence"
-                                    #sequence="ngModel" [(ngModel)]="primer.sequence" placeholder="Sequence"
-                                    (keyup)="onPrimerChanged(primer)" [ngModelOptions]="{standalone: true}" required>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput appDigitOnly placeholder="Start Coordinate"
-                                    [(ngModel)]="primer.genomicStartCoordinate" (keyup)="onPrimerChanged(primer)"
-                                    [ngModelOptions]="{standalone: true}">
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <input matInput appDigitOnly placeholder="End Coordinate" [(ngModel)]="primer.genomicEndCoordinate"
-                                    (keyup)="onPrimerChanged(primer)" [ngModelOptions]="{standalone: true}">
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <button (click)="onClickToDeleteElement(primer)">
-                                <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-                            </button>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template #readOnlyRow>
-                    <tr>
-                        <td>
-                            {{primer.name}}
-                        </td>
-                        <td>
-                            {{primer.sequence}}
-                        </td>
-                        <td>
-                            {{primer.genomicStartCoordinate || "Not defined"}}
-                        </td>
-                        <td>
-                            {{primer.genomicEndCoordinate || "Not defined"}}
-                        </td>
-                    </tr>
-                </ng-template>
-            </ng-template>
-            <tr>
-                <td class="no_border"><button (click)="addPrimer()" [disabled]="false" *ngIf="canUpdatePlan">
-                        <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-                    </button>
-                </td>
-            </tr>
-        </table>
-
-    </mat-card-content>
+  <mat-card-subtitle>Genotype Primers</mat-card-subtitle>
+  <mat-card-content>
+    <table class="mat-elevation-z8">
+      <tr>
+        <th>Name</th>
+        <th>Sequence</th>
+        <th>Start Coordinate</th>
+        <th>End Coordinate</th>
+        <th></th>
+      </tr>
+      @for (primer of dataSource; track primer) {
+        @if (canUpdatePlan) {
+          <tr>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput [ngClass]="{'required': name.invalid}" name="name" #name="ngModel"
+                  [(ngModel)]="primer.name" placeholder="Primer's name" (keyup)="onPrimerChanged(primer)"
+                  [ngModelOptions]="{standalone: true}" required>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput [ngClass]="{'required': sequence.invalid, 'sequence_input':true}" name="sequence"
+                  #sequence="ngModel" [(ngModel)]="primer.sequence" placeholder="Sequence"
+                  (keyup)="onPrimerChanged(primer)" [ngModelOptions]="{standalone: true}" required>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput appDigitOnly placeholder="Start Coordinate"
+                  [(ngModel)]="primer.genomicStartCoordinate" (keyup)="onPrimerChanged(primer)"
+                  [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <input matInput appDigitOnly placeholder="End Coordinate" [(ngModel)]="primer.genomicEndCoordinate"
+                  (keyup)="onPrimerChanged(primer)" [ngModelOptions]="{standalone: true}">
+              </mat-form-field>
+            </td>
+            <td>
+              <button (click)="onClickToDeleteElement(primer)">
+                <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        } @else {
+          <tr>
+            <td>
+              {{primer.name}}
+            </td>
+            <td>
+              {{primer.sequence}}
+            </td>
+            <td>
+              {{primer.genomicStartCoordinate || "Not defined"}}
+            </td>
+            <td>
+              {{primer.genomicEndCoordinate || "Not defined"}}
+            </td>
+          </tr>
+        }
+      }
+      <tr>
+        <td class="no_border">
+          @if (canUpdatePlan) {
+            <button (click)="addPrimer()" [disabled]="false">
+              <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+            </button>
+          }
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
 </mat-card>

@@ -1,8 +1,12 @@
-<div *ngIf="error" class="alert alert-danger">{{error}}</div>
+@if (error) {
+  <div class="alert alert-danger">{{error}}</div>
+}
 
-<button *ngIf="currentConsortium" mat-button (click)="toogleShowFilters()">
-  <mat-icon>filter_list</mat-icon> {{ filterVisible ? 'Hide Filters' : 'Show Filters' }}
-</button>
+@if (currentConsortium) {
+  <button mat-button (click)="toogleShowFilters()">
+    <mat-icon>filter_list</mat-icon> {{ filterVisible ? 'Hide Filters' : 'Show Filters' }}
+  </button>
+}
 
 <div class="all-wrap">
   <mat-sidenav-container class="sidenav-container">
@@ -18,15 +22,12 @@
           </app-consortium-selector>
         </mat-card-content>
       </mat-card>
-
       <mat-card appearance="outlined">
         <mat-card-content>
-
           <app-list-controls [canUpdateList]="canUpdateList" [currentConsortium]="currentConsortium"
             (importFileSelected)="onImportFileSelected($event)" (exportOptionSelected)="onExportOptionSelected($event)"
             (editModeChanged)="onEditModeChanged($event)">
           </app-list-controls>
-
           <app-list-content #listContent [canUpdateList]="canUpdateList"
             [currentSelectedEditMode]="currentSelectedEditMode" (errorEventEmitter)="onErrorInContent($event)">
           </app-list-content>

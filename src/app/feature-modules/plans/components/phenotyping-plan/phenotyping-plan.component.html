@@ -7,27 +7,37 @@
   </mat-card-content>
 </mat-card>
 
-<app-plan-details *ngIf="plan.pin" [canUpdatePlan]="canUpdatePlan" [plan]="plan">
-</app-plan-details>
+@if (plan.pin) {
+  <app-plan-details [canUpdatePlan]="canUpdatePlan" [plan]="plan">
+  </app-plan-details>
+}
 
 <div class="section">
-  <app-status-transition *ngIf="plan.statusTransition" [statusTransition]="plan.statusTransition"
-    [canUpdate]="canUpdatePlan">
-  </app-status-transition>
+  @if (plan.statusTransition) {
+    <app-status-transition [statusTransition]="plan.statusTransition"
+      [canUpdate]="canUpdatePlan">
+    </app-status-transition>
+  }
   <app-status-date [statusDates]="plan.statusDates" [title]='"Plan Status History"'></app-status-date>
 </div>
 
-<app-phenotyping-attempt *ngIf="plan.phenotypingAttemptResponse" [plan]=plan [phenotypingAttempt]="plan.phenotypingAttemptResponse"
-  [canUpdatePlan]="canUpdatePlan">
-</app-phenotyping-attempt>
+@if (plan.phenotypingAttemptResponse) {
+  <app-phenotyping-attempt [plan]=plan [phenotypingAttempt]="plan.phenotypingAttemptResponse"
+    [canUpdatePlan]="canUpdatePlan">
+  </app-phenotyping-attempt>
+}
 
 <mat-card appearance="outlined">
   <mat-card-content>
-    <button mat-raised-button color="primary" [disabled]="!shouldShowUpdateButton()" *ngIf="canUpdatePlan"
+    @if (canUpdatePlan) {
+      <button mat-raised-button color="primary" [disabled]="!shouldShowUpdateButton()"
       (click)="updatePlan()">Update</button>
+    }
     <br>
     <span style="font-size: 12px; ">* required fields</span>
     <div class="separation"></div>
-    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    @if (error) {
+      <div class="alert alert-danger">{{ error }}</div>
+    }
   </mat-card-content>
 </mat-card>

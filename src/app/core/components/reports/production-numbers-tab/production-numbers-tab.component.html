@@ -3,12 +3,11 @@
   <div>
     <div class="total-genes-wrapper">
       Number of genes with genotype confirmed lines:
-      <ng-container *ngIf="totalNumOfGenes$ | async as totalNumOfGenes; else loading">
+      @if (totalNumOfGenes$ | async; as totalNumOfGenes) {
         {{ totalNumOfGenes | number }}
-      </ng-container>
-      <ng-template #loading>
+      } @else {
         <ngx-skeleton-loader count="1" [theme]="{'margin-bottom': 0}"></ngx-skeleton-loader>
-      </ng-template>
+      }
     </div>
     <p>
       <a href="https://www.gentar.org/tracker-api/api/reports/glt_production_numbers/overlap/intersection" download>
@@ -18,24 +17,33 @@
   </div>
 </div>
 <div class="chart-container">
-  <div class="loading-overlay" *ngIf="isFetchingData || !charDataIsAvailable ">
-    <mat-spinner *ngIf="isFetchingData"></mat-spinner>
-    <h2 *ngIf="!charDataIsAvailable">There is no data available for the filters selected</h2>
-  </div>
+  @if (isFetchingData || !charDataIsAvailable ) {
+    <div class="loading-overlay">
+      @if (isFetchingData) {
+        <mat-spinner></mat-spinner>
+      }
+      @if (!charDataIsAvailable) {
+        <h2>There is no data available for the filters selected</h2>
+      }
+    </div>
+  }
   <div class="title-wrapper">
     <h3>Cumulative number of genes studied by ES Cell and CRISPR based techniques</h3>
-    <div class="legends" *ngIf="chartDirective && chartDirective?.chart as chart">
-      <div
-        class="legend-item"
-        *ngFor="let item of chart.legend.legendItems"
-        (click)="onLegendItemClick($event, item)"
-      >
-        <span class="color" [ngStyle]="{ background: item.fillStyle, 'border-color': item.strokeStyle }"></span>
-        <span class="text" [ngClass]="{ 'active-filter': isItemFilterActive(item) }">
-            {{ item.text }}
-          </span>
+    @if (chartDirective && chartDirective?.chart; as chart) {
+      <div class="legends">
+        @for (item of chart.legend.legendItems; track item) {
+          <div
+            class="legend-item"
+            (click)="onLegendItemClick($event, item)"
+            >
+            <span class="color" [ngStyle]="{ background: item.fillStyle, 'border-color': item.strokeStyle }"></span>
+            <span class="text" [ngClass]="{ 'active-filter': isItemFilterActive(item) }">
+              {{ item.text }}
+            </span>
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
   <canvas
     baseChart
@@ -43,14 +51,24 @@
     [type]="'line'"
     [data]="chartData"
     [options]="lineChartOptions"
-  >
+    >
   </canvas>
   <div>
-    <p *ngIf="selectedOption === 'IMPC'">Displaying data from the whole IMPC </p>
-    <p *ngIf="selectedOption === 'WorkUnit' && !workUnitControl.value">Please select a work unit</p>
-    <p *ngIf="selectedOption === 'WorkUnit' && workUnitControl.value">Filtering by {{workUnitControl.value}} work unit</p>
-    <p *ngIf="selectedOption === 'MultipleWorkUnit' && !multipleWorkUnitControl.value.length">Please select a work unit</p>
-    <p *ngIf="selectedOption === 'MultipleWorkUnit' && multipleWorkUnitControl.value.length">Filtering by {{multipleWorkUnitControl.value.join(', ')}} work unit</p>
+    @if (selectedOption === 'IMPC') {
+      <p>Displaying data from the whole IMPC </p>
+    }
+    @if (selectedOption === 'WorkUnit' && !workUnitControl.value) {
+      <p>Please select a work unit</p>
+    }
+    @if (selectedOption === 'WorkUnit' && workUnitControl.value) {
+      <p>Filtering by {{workUnitControl.value}} work unit</p>
+    }
+    @if (selectedOption === 'MultipleWorkUnit' && !multipleWorkUnitControl.value.length) {
+      <p>Please select a work unit</p>
+    }
+    @if (selectedOption === 'MultipleWorkUnit' && multipleWorkUnitControl.value.length) {
+      <p>Filtering by {{multipleWorkUnitControl.value.join(', ')}} work unit</p>
+    }
   </div>
 </div>
 <div class="controls">
@@ -58,19 +76,19 @@
     <mat-radio-button
       [checked]="selectedOption === 'IMPC'"
       (change)="updateSelection('IMPC')"
-    >
+      >
       IMPC
     </mat-radio-button>
     <mat-radio-button
       [checked]="selectedOption === 'WorkUnit'"
       (change)="updateSelection('WorkUnit')"
-    >
+      >
       By work unit
     </mat-radio-button>
     <mat-radio-button
       [checked]="selectedOption === 'MultipleWorkUnit'"
       (change)="updateSelection('MultipleWorkUnit')"
-    >
+      >
       By multiple work unit
     </mat-radio-button>
   </div>
@@ -86,11 +104,13 @@
           #workUnitInput
           [formControl]="workUnitControl"
           [matAutocomplete]="workUnitAutocomplete"
-        >
+          >
         <mat-autocomplete #workUnitAutocomplete="matAutocomplete">
-          <mat-option *ngFor="let unit of workUnits$ | async" [value]="unit">
-            {{ unit }}
-          </mat-option>
+          @for (unit of workUnits$ | async; track unit) {
+            <mat-option [value]="unit">
+              {{ unit }}
+            </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
       <mat-form-field>
@@ -103,11 +123,13 @@
           #workGroupInput
           [formControl]="workGroupControl"
           [matAutocomplete]="workGroupAutocomplete"
-        >
+          >
         <mat-autocomplete #workGroupAutocomplete="matAutocomplete">
-          <mat-option *ngFor="let group of workGroups$ | async" [value]="group">
-            {{ group }}
-          </mat-option>
+          @for (group of workGroups$ | async; track group) {
+            <mat-option [value]="group">
+              {{ group }}
+            </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
@@ -117,11 +139,15 @@
         <mat-select [formControl]="multipleWorkUnitControl" multiple>
           <mat-select-trigger>
             {{multipleWorkUnitControl.value?.[0] || ''}}
-            <span *ngIf="(multipleWorkUnitControl.value?.length || 0) > 1" class="example-additional-selection">
-              (+{{(multipleWorkUnitControl.value?.length || 0) - 1}} {{multipleWorkUnitControl.value?.length === 2 ? 'other' : 'others'}})
-            </span>
+            @if ((multipleWorkUnitControl.value?.length || 0) > 1) {
+              <span class="example-additional-selection">
+                (+{{(multipleWorkUnitControl.value?.length || 0) - 1}} {{multipleWorkUnitControl.value?.length === 2 ? 'other' : 'others'}})
+              </span>
+            }
           </mat-select-trigger>
-          <mat-option *ngFor="let unit of workUnits$ | async" [value]="unit">{{unit}}</mat-option>
+          @for (unit of workUnits$ | async; track unit) {
+            <mat-option [value]="unit">{{unit}}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -134,14 +160,14 @@
         [matDatepicker]="startDateDP"
         [value]="selectedStartDate"
         (dateChange)="onChangedDate('selectedStartDate', $event)"
-      >
+        >
       <mat-hint>MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="startDateDP"></mat-datepicker-toggle>
       <mat-datepicker
         #startDateDP
         startView="multi-year"
         (monthSelected)="onSelectedMonth('selectedStartDate', $event, startDateDP)"
-      >
+        >
       </mat-datepicker>
     </mat-form-field>
     <mat-form-field>
@@ -151,14 +177,14 @@
         [matDatepicker]="endDateDP"
         [value]="selectedEndDate"
         (dateChange)="onChangedDate('selectedEndDate', $event)"
-      >
+        >
       <mat-hint>MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="endDateDP"></mat-datepicker-toggle>
       <mat-datepicker
         #endDateDP
         startView="multi-year"
         (monthSelected)="onSelectedMonth('selectedEndDate', $event, endDateDP)"
-      >
+        >
       </mat-datepicker>
     </mat-form-field>
   </div>

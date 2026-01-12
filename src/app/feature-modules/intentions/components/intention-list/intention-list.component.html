@@ -1,74 +1,79 @@
 
 <table mat-table [dataSource]="projectIntentions" multiTemplateDataRows class="mat-elevation-z8 demo-table">
 
-    <!-- Molecular Mutation Type -->
-    <ng-container matColumnDef="molecularMutationType">
-        <th mat-header-cell *matHeaderCellDef> Molecular Mutation Type </th>
-        <td mat-cell *matCellDef="let element">
-            {{ element.molecularMutationTypeName }}
-        </td>
-    </ng-container>
+  <!-- Molecular Mutation Type -->
+  <ng-container matColumnDef="molecularMutationType">
+    <th mat-header-cell *matHeaderCellDef> Molecular Mutation Type </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.molecularMutationTypeName }}
+    </td>
+  </ng-container>
 
-    <!-- Mutation Categorizations -->
-    <ng-container matColumnDef="mutationCategorizations">
-        <th mat-header-cell *matHeaderCellDef> Mutation Categorizations </th>
-        <td mat-cell *matCellDef="let element">
-            <li *ngFor="let mutationCategorization of element.mutationCategorizations">
-                {{ mutationCategorization.name }}
-            </li>
-        </td>
-    </ng-container>
+  <!-- Mutation Categorizations -->
+  <ng-container matColumnDef="mutationCategorizations">
+    <th mat-header-cell *matHeaderCellDef> Mutation Categorizations </th>
+    <td mat-cell *matCellDef="let element">
+      @for (mutationCategorization of element.mutationCategorizations; track mutationCategorization) {
+        <li>
+          {{ mutationCategorization.name }}
+        </li>
+      }
+    </td>
+  </ng-container>
 
-    <!-- Symbol-->
-    <ng-container matColumnDef="geneSymbol">
-        <th mat-header-cell *matHeaderCellDef> Gene Symbol </th>
-        <td mat-cell *matCellDef="let element">
-            <a href="{{ element.intentionByGene.gene.externalLink }}"
-                target="_blank">{{ element.intentionByGene.gene.symbol }}</a>
-        </td>
-    </ng-container>
+  <!-- Symbol-->
+  <ng-container matColumnDef="geneSymbol">
+    <th mat-header-cell *matHeaderCellDef> Gene Symbol </th>
+    <td mat-cell *matCellDef="let element">
+      <a href="{{ element.intentionByGene.gene.externalLink }}"
+      target="_blank">{{ element.intentionByGene.gene.symbol }}</a>
+    </td>
+  </ng-container>
 
-    <!-- Accession Id -->
-    <ng-container matColumnDef="accessionId">
-        <th mat-header-cell *matHeaderCellDef> Accession Id </th>
-        <td mat-cell *matCellDef="let element">
-            <a href="{{ element.intentionByGene.gene.externalLink }}"
-                target="_blank">{{ element.intentionByGene.gene.accessionId }}</a>
-        </td>
-    </ng-container>
+  <!-- Accession Id -->
+  <ng-container matColumnDef="accessionId">
+    <th mat-header-cell *matHeaderCellDef> Accession Id </th>
+    <td mat-cell *matCellDef="let element">
+      <a href="{{ element.intentionByGene.gene.externalLink }}"
+      target="_blank">{{ element.intentionByGene.gene.accessionId }}</a>
+    </td>
+  </ng-container>
 
-    <!-- Sequence link -->
-    <ng-container matColumnDef="sequence">
-        <th mat-header-cell *matHeaderCellDef> Sequence Information </th>
-        <td mat-cell *matCellDef="let element">
-            <div *ngIf="element.intentionsBySequence !== undefined && element.intentionsBySequence !== null && element.intentionsBySequence.length > 0;
-                else elseBlock">
-                Click row to see sequence intention
+  <!-- Sequence link -->
+  <ng-container matColumnDef="sequence">
+    <th mat-header-cell *matHeaderCellDef> Sequence Information </th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.intentionsBySequence !== undefined && element.intentionsBySequence !== null && element.intentionsBySequence.length > 0) {
+        <div>
+          Click row to see sequence intention
+        </div>
+      } @else {
+        No sequence intention information.
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+      <div class="example-element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+        <div>
+          @for (intentionBySequence of element.intentionsBySequence; track intentionBySequence) {
+            <div>
+              <mat-card appearance="outlined">
+                <app-sequence-intention-detail [intentionBySequence]=intentionBySequence>
+                </app-sequence-intention-detail>
+              </mat-card>
             </div>
-            <ng-template #elseBlock>No sequence intention information.</ng-template>
-        </td>
-    </ng-container>
+          }
+        </div>
+      </div>
+    </td>
+  </ng-container>
 
-    <ng-container matColumnDef="expandedDetail">
-        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-            <div class="example-element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
-                <div>
-                    <div *ngFor="let intentionBySequence of element.intentionsBySequence">
-                        <mat-card appearance="outlined">
-                            <app-sequence-intention-detail [intentionBySequence]=intentionBySequence>
-                            </app-sequence-intention-detail>
-                        </mat-card>
-
-                    </div>
-                </div>
-            </div>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
-        [class.example-expanded-row]="expandedElement === row"
-        (click)="expandedElement = expandedElement === row ? null : row">
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="example-element-row"
+    [class.example-expanded-row]="expandedElement === row"
+    (click)="expandedElement = expandedElement === row ? null : row">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>

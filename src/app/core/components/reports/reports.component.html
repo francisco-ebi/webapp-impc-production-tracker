@@ -18,11 +18,13 @@
             (change)="onOptionActivated($event)"
             #workUnitInput
             [matAutocomplete]="WUAutocomplete"
-          >
+            >
           <mat-autocomplete #WUAutocomplete="matAutocomplete" (optionSelected)="onOptionActivated($event)">
-            <mat-option *ngFor="let unit of workUnits$ | async" [value]="unit">
-              {{ unit }}
-            </mat-option>
+            @for (unit of workUnits$ | async; track unit) {
+              <mat-option [value]="unit">
+                {{ unit }}
+              </mat-option>
+            }
           </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
@@ -39,7 +41,7 @@
           color="primary"
           (click)="downloadWorkUnitAttemptsReport()"
           [disabled]="!attemptWorkUnitSelected || !attemptTypeSelected"
-        >
+          >
           Download report
         </button>
       </div>
@@ -90,11 +92,13 @@
             #rridAutoComplete
             [formControl]="rridAutocompleteFormControl"
             [matAutocomplete]="rridReportAutoComplete"
-          >
+            >
           <mat-autocomplete #rridReportAutoComplete="matAutocomplete">
-            <mat-option *ngFor="let unit of networks$ | async" [value]="unit">
-              {{ unit }}
-            </mat-option>
+            @for (unit of networks$ | async; track unit) {
+              <mat-option [value]="unit">
+                {{ unit }}
+              </mat-option>
+            }
           </mat-autocomplete>
         </mat-form-field>
         <mat-form-field>
@@ -110,7 +114,7 @@
           color="primary"
           [disabled]="!rridAutocompleteFormControl.valid || !rridReportType"
           (click)="downloadRRIDReport()"
-        >
+          >
           Download report
         </button>
       </div>
@@ -128,11 +132,13 @@
             (change)="onOptionActivated($event)"
             #workUnitInput
             [matAutocomplete]="WUAutocomplete"
-          >
+            >
           <mat-autocomplete #WUAutocomplete="matAutocomplete" (optionSelected)="onOptionActivated($event)">
-            <mat-option *ngFor="let unit of workUnits$ | async" [value]="unit">
-              {{ unit }}
-            </mat-option>
+            @for (unit of workUnits$ | async; track unit) {
+              <mat-option [value]="unit">
+                {{ unit }}
+              </mat-option>
+            }
           </mat-autocomplete>
         </mat-form-field>
 
@@ -140,7 +146,7 @@
           mat-raised-button
           color="primary"
           (click)="downloadCrisprAllelesReport()"
-        >
+          >
           Download report
         </button>
       </div>

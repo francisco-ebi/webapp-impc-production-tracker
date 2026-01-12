@@ -1,8 +1,10 @@
 <div>
-    Manager Section
-    <ul class="">
-      <li *ngIf="canRegisterUser">
+  Manager Section
+  <ul class="">
+    @if (canRegisterUser) {
+      <li>
         <a routerLink="/admin/register-user">Register User</a>
       </li>
-    </ul>
-  </div>
+    }
+  </ul>
+</div>

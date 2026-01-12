@@ -1,40 +1,37 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Phenotyping Stages</mat-card-subtitle>
-    <mat-card-content>
+  <mat-card-subtitle>Phenotyping Stages</mat-card-subtitle>
+  <mat-card-content>
 
-        <mat-card appearance="outlined" *ngFor="let phenotypingStage of phenotypingStages">
+    @for (phenotypingStage of phenotypingStages; track phenotypingStage) {
+      <mat-card appearance="outlined">
+        <label for="psn">Phenotyping Stage id:</label>
+        <div id="psn" class="content">{{ phenotypingStage.psn}}</div>
+        <label for="phenotypingTypeName">Type:</label>
+        <div id="phenotypingTypeName" class="content">{{ phenotypingStage.phenotypingTypeName}}</div>
+        <label for="statusName">Status:</label>
+        <div id="statusName" class="content">{{ phenotypingStage.statusName }}</div>
+        <a [routerLink]="['phenotyping-stage/', phenotypingStage.psn]">See
+        Phenotyping Stage</a>
+        <mat-card-content></mat-card-content>
+      </mat-card>
+    }
 
-            <label for="psn">Phenotyping Stage id:</label>
-            <div id="psn" class="content">{{ phenotypingStage.psn}}</div>
+    @if (canUpdate) {
+      <div id="addPhenotypingStageSection">
+        @if (phenotypingAttemptExists()) {
+          <a routerLink="phenotyping-stage-creation"><button class="create-button" mat-raised-button
+            color="primary">Add
+          Phenotyping Stage</button></a>
+        } @else {
+          <button class="create-button" mat-raised-button color="primary" [disabled]="true">Add
+          Phenotyping Stage</button>
+          <div class="note">
+            To create a phenotyping stage, please update first the plan with the Phenotyping Attempt details (external
+            reference and background strain).
+          </div>
+        }
+      </div>
+    }
 
-            <label for="phenotypingTypeName">Type:</label>
-            <div id="phenotypingTypeName" class="content">{{ phenotypingStage.phenotypingTypeName}}</div>
-
-            <label for="statusName">Status:</label>
-            <div id="statusName" class="content">{{ phenotypingStage.statusName }}</div>
-
-            <a [routerLink]="['phenotyping-stage/', phenotypingStage.psn]">See
-                Phenotyping Stage</a>
-
-            <mat-card-content></mat-card-content>
-        </mat-card>
-
-        <div id="addPhenotypingStageSection" *ngIf="canUpdate">
-            <div *ngIf="phenotypingAttemptExists(); then enabledButton else disabledButton"></div>
-            <ng-template #enabledButton>
-                <a routerLink="phenotyping-stage-creation"><button class="create-button" mat-raised-button
-                        color="primary">Add
-                        Phenotyping Stage</button></a>
-            </ng-template>
-            <ng-template #disabledButton>
-                <button class="create-button" mat-raised-button color="primary" [disabled]="true">Add
-                    Phenotyping Stage</button>
-                <div class="note">
-                    To create a phenotyping stage, please update first the plan with the Phenotyping Attempt details (external
-                    reference and background strain).
-                </div>
-            </ng-template>
-        </div>
-
-    </mat-card-content>
+  </mat-card-content>
 </mat-card>

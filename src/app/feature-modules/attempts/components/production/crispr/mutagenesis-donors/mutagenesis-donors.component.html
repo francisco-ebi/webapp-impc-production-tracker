@@ -10,10 +10,8 @@
       </tr>
     </thead>
 
-    <ng-template ngFor let-donor [ngForOf]="dataSource">
-      <div *ngIf="canUpdatePlan; then editableRow else readOnlyRow">
-      </div>
-      <ng-template #editableRow>
+    @for (donor of dataSource; track donor) {
+      @if (canUpdatePlan) {
         <tr>
           <td>
             <mat-form-field appearance="fill">
@@ -27,9 +25,11 @@
               <mat-select (selectionChange)="onDonorChanged(donor)" class="preparation"
                 [(value)]="donor.preparationTypeName">
                 <mat-option></mat-option>
-                <mat-option *ngFor="let preparationType of preparationTypes" [value]="preparationType.name">
-                  {{preparationType.name}}
-                </mat-option>
+                @for (preparationType of preparationTypes; track preparationType) {
+                  <mat-option [value]="preparationType.name">
+                    {{preparationType.name}}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </td>
@@ -46,8 +46,7 @@
             </button>
           </td>
         </tr>
-      </ng-template>
-      <ng-template #readOnlyRow>
+      } @else {
         <tr>
           <td>
             {{donor.oligoSequenceFasta}}
@@ -58,16 +57,17 @@
           <td>
             {{donor.concentration}}
           </td>
-
         </tr>
-      </ng-template>
-    </ng-template>
+      }
+    }
     <tr>
-      <td class="no_border"><button (click)="addDonor()" [disabled]="false" *ngIf="canUpdatePlan">
-          <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-        </button>
+      <td class="no_border">
+        @if (canUpdatePlan) {
+          <button (click)="addDonor()" [disabled]="false">
+            <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+          </button>
+        }
       </td>
     </tr>
-
   </table>
 </mat-card>

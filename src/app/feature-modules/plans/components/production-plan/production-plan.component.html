@@ -11,47 +11,60 @@
 
 <mat-sidenav-container>
   <mat-sidenav-content>
-      <form [formGroup]="prodPlanForm" (ngSubmit)="update()" novalidate>
+    <form [formGroup]="prodPlanForm" (ngSubmit)="update()" novalidate>
 
-        <app-plan-details [plan]="plan" [canUpdatePlan]="canUpdatePlan" formControlName="planDetails">
-        </app-plan-details>
+      <app-plan-details [plan]="plan" [canUpdatePlan]="canUpdatePlan" formControlName="planDetails">
+      </app-plan-details>
 
-        <app-status-transition *ngIf="plan.statusTransition" [statusTransition]="plan.statusTransition"
+      @if (plan.statusTransition) {
+        <app-status-transition [statusTransition]="plan.statusTransition"
           [canUpdate]="canUpdatePlan">
         </app-status-transition>
-        <app-status-date [statusDates]="plan.statusDates" [title]='"Plan Status History"'></app-status-date>
+      }
+      <app-status-date [statusDates]="plan.statusDates" [title]='"Plan Status History"'></app-status-date>
 
-        <app-crispr-attempt *ngIf="plan.attemptTypeName === 'crispr' || plan.attemptTypeName === 'haplo-essential crispr'"
+      @if (plan.attemptTypeName === 'crispr' || plan.attemptTypeName === 'haplo-essential crispr') {
+        <app-crispr-attempt
           [crisprAttempt]="plan.crisprAttempt" [canUpdatePlan]="canUpdatePlan">
         </app-crispr-attempt>
+      }
 
-        <app-escell-attempt *ngIf="plan.attemptTypeName === 'es cell'" formControlName="esCellAttempt"
+      @if (plan.attemptTypeName === 'es cell') {
+        <app-escell-attempt formControlName="esCellAttempt"
           [esCellAttempt]="plan.esCellAttempt" [canUpdatePlan]="canUpdatePlan">
         </app-escell-attempt>
+      }
 
-        <app-es-cell-allele-modification-attempt *ngIf="plan.attemptTypeName === 'es cell allele modification'" formControlName="esCellAlleleModificationAttempt"
+      @if (plan.attemptTypeName === 'es cell allele modification') {
+        <app-es-cell-allele-modification-attempt formControlName="esCellAlleleModificationAttempt"
           [esCellAlleleModificationAttempt]="plan.esCellAlleleModificationAttempt" [esCellAlleleModificationStartingPoint]="plan.esCellAlleleModificationStartingPoint"
           [canUpdatePlan]="canUpdatePlan" [tpn]="project.tpn">
         </app-es-cell-allele-modification-attempt>
+      }
 
-        <app-crispr-allele-modification-attempt *ngIf="plan.attemptTypeName === 'crispr allele modification'" formControlName="crisprAlleleModificationAttempt"
-                                                 [crisprAlleleModificationAttempt]="plan.crisprAlleleModificationAttempt" [crisprAlleleModificationStartingPoint]="plan.crisprAlleleModificationStartingPoint"
-                                                 [canUpdatePlan]="canUpdatePlan" [tpn]="project.tpn">
+      @if (plan.attemptTypeName === 'crispr allele modification') {
+        <app-crispr-allele-modification-attempt formControlName="crisprAlleleModificationAttempt"
+          [crisprAlleleModificationAttempt]="plan.crisprAlleleModificationAttempt" [crisprAlleleModificationStartingPoint]="plan.crisprAlleleModificationStartingPoint"
+          [canUpdatePlan]="canUpdatePlan" [tpn]="project.tpn">
         </app-crispr-allele-modification-attempt>
+      }
 
-        <app-outcome-list [outcomes]=outcomes [tpn]=project.tpn [pin]=plan.pin [attemptType]=plan.attemptTypeName [canUpdate]="canAddOutcome">
-        </app-outcome-list>
+      <app-outcome-list [outcomes]=outcomes [tpn]=project.tpn [pin]=plan.pin [attemptType]=plan.attemptTypeName [canUpdate]="canAddOutcome">
+      </app-outcome-list>
 
-        <!-- Submit -->
+      <!-- Submit -->
+      <br>
+      <div class="button-wrapper">
+        @if (canUpdatePlan) {
+          <button mat-raised-button color="primary" type="submit" [disabled]="!planHasChanged()">Update</button>
+        }
         <br>
-        <div class="button-wrapper">
-          <button mat-raised-button color="primary" type="submit" *ngIf="canUpdatePlan" [disabled]="!planHasChanged()">Update</button>
-          <br>
-          <span style="font-size: 12px; ">* required fields</span>
-          <div class="separation"></div>
-          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
-        </div>
-
+        <span style="font-size: 12px; ">* required fields</span>
+        <div class="separation"></div>
+        @if (error) {
+          <div class="alert alert-danger">{{ error }}</div>
+        }
+      </div>
     </form>
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -35,10 +35,14 @@
     </tr>
   </table>
   <p>
-    <a *ngIf="'production' === plan.typeName" [routerLink]="['production-plan', plan.pin]">See
+    @if ('production' === plan.typeName) {
+      <a [routerLink]="['production-plan', plan.pin]">See
       plan</a>
+    }
 
-    <a *ngIf="'phenotyping' === plan.typeName" [routerLink]="['phenotyping-plan', plan.pin]">See
+    @if ('phenotyping' === plan.typeName) {
+      <a [routerLink]="['phenotyping-plan', plan.pin]">See
       plan</a>
+    }
   </p>
 </mat-card>
