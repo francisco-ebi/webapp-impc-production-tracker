@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "eslint --color --fix -c .eslintrc.js --ext .ts ./src/app",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "ng-lint": "ng lint",
+    "build-prod": "ng build --configuration=production --output-path=./dist/out --base-href ./ --deploy-url ./"
   },
   "private": true,
   "dependencies": {
