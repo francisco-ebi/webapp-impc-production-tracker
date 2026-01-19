@@ -11,12 +11,10 @@
     justify-content: center;
   }
 
-  .example-table-container {
-    position: relative;
-    min-height: 400px;
-    max-height: 950px;
-    overflow: auto;
-  }
+.example-table-container {
+  position: relative;
+  overflow: auto;
+}
 
   table {
     width: 100%;
