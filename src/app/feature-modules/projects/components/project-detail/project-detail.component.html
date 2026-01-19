@@ -23,89 +23,82 @@
       <div class="separation"></div>
 
       <label for="intentions">Intentions:</label>
-      <app-intention-list *ngIf="project.projectIntentions" [projectIntentions]="project.projectIntentions"></app-intention-list>
+      @if (project.projectIntentions) {
+        <app-intention-list [projectIntentions]="project.projectIntentions"></app-intention-list>
+      }
       <div class="separation"></div>
 
-      <div *ngIf="canUpdateProject; then projectEditable else projectReadOnly"></div>
-      <ng-template #projectEditable>
+      @if (canUpdateProject) {
         <label for="privacyName">Privacy:</label>
         <mat-form-field appearance="fill">
           <mat-select formControlName="privacyName">
             <mat-option></mat-option>
-            <mat-option *ngFor="let privacy of privacies" [value]="privacy.name">
-              {{ privacy.name }}
-            </mat-option>
+            @for (privacy of privacies; track privacy) {
+              <mat-option [value]="privacy.name">
+                {{ privacy.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
         <br>
-
         <label for="recovery">Recovery:</label>
         <mat-checkbox formControlName="recovery"></mat-checkbox>
         <div class="separation"></div>
-
         <app-project-consortium-institutes [projectConsortia]="project.consortia" [canUpdate]="false"></app-project-consortium-institutes>
         <br>
-
         <label for="comment">Comment:</label>
         <mat-form-field appearance="fill">
           <textarea matInput formControlName="comment"></textarea>
         </mat-form-field>
         <br>
-
         <label for="completionNote">Completion Note:</label>
         <mat-form-field appearance="fill">
           <mat-select formControlName="completionNote" >
             <mat-option></mat-option>
-            <mat-option *ngFor="let note of completionNotes" [value]="note.name">
-              {{ note.name }}
-            </mat-option>
+            @for (note of completionNotes; track note) {
+              <mat-option [value]="note.name">
+                {{ note.name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
         <br>
-
         <label for="completionComment">Completion Comment:</label>
         <mat-form-field appearance="fill">
           <textarea matInput formControlName="completionComment" class="form-control" ></textarea>
         </mat-form-field>
         <br>
-      </ng-template>
-
-      <ng-template #projectReadOnly>
+      } @else {
         <label for="privacy">Privacy:</label>
         <mat-form-field appearance="fill">
-            <input matInput readonly [(value)]="project.privacyName" />
+          <input matInput readonly [(value)]="project.privacyName" />
         </mat-form-field>
         <br>
-
         <label for="recovery">Recovery:</label>
         <mat-checkbox [(value)]="project.recovery" [disabled]=true></mat-checkbox>
         <div class="separation"></div>
-
         <app-project-consortium-institutes [projectConsortia]="project.consortia" [canUpdate]="false"></app-project-consortium-institutes>
         <br>
-
         <label for="comment">Comment:</label>
         <mat-form-field appearance="fill">
-            <textarea matInput readonly [(value)]="project.comment"></textarea>
+          <textarea matInput readonly [(value)]="project.comment"></textarea>
         </mat-form-field>
         <br>
-
         <label for="completionNote">Completion Note:</label>
         <mat-form-field appearance="fill">
-            <input matInput readonly [(value)]="project.completionNote" />
+          <input matInput readonly [(value)]="project.completionNote" />
         </mat-form-field>
         <br>
-
         <label for="completionComment">Completion Comment:</label>
         <mat-form-field appearance="fill">
-            <textarea matInput readonly [(value)]="project.completionComment"></textarea>
+          <textarea matInput readonly [(value)]="project.completionComment"></textarea>
         </mat-form-field>
         <br>
-      </ng-template>
-
-      <app-project-es-cell-qc *ngIf="isEsCellProject" [esCellQc]="project.esCellDetails" [canUpdate]="canUpdateProject"
-      formControlName="esCellDetails">
-      </app-project-es-cell-qc>
+      }
+      @if (isEsCellProject) {
+        <app-project-es-cell-qc [esCellQc]="project.esCellDetails" [canUpdate]="canUpdateProject" formControlName="esCellDetails">
+        </app-project-es-cell-qc>
+      }
 
       <app-status-date [statusDates]="project.assignmentStatusStamps" [title]="'Assignment Status Stamps'"></app-status-date>
 
@@ -113,128 +106,146 @@
 
       <!-- Submit -->
       <div class="button-wrapper">
-        <button mat-raised-button color="primary" [disabled]="projectForm.invalid || !projectForm.dirty" *ngIf="canUpdateProject">Update</button>
+        @if (canUpdateProject) {
+          <button mat-raised-button color="primary" [disabled]="projectForm.invalid || !projectForm.dirty">Update</button>
+        }
         <br>
         <span style="font-size: 12px; ">* required fields</span>
         <div class="separation"></div>
-        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        @if (error) {
+          <div class="alert alert-danger">{{ error }}</div>
+        }
       </div>
     </form>
   </mat-card-content>
 </mat-card>
-
 <mat-card appearance="outlined">
   <fieldset>
     <legend class="subtitle">
       Production Plans
     </legend>
-    <table style="width: 100%;" *ngIf="productionPlansDetails.length > 0">
-      <tbody>
-        <tr *ngFor="let productionPlanDetail of sortByPid(productionPlansDetails)">
-          <app-plan-summary [plan]="productionPlanDetail"></app-plan-summary>
-        </tr>
-      </tbody>
-    </table>
+    @if (productionPlansDetails.length > 0) {
+      <table style="width: 100%;">
+        <tbody>
+          @for (productionPlanDetail of sortByPid(productionPlansDetails); track productionPlanDetail) {
+            <tr>
+              <app-plan-summary [plan]="productionPlanDetail"></app-plan-summary>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
     <br>
 
-    <div *ngIf="canCreateProductionPlan; then enabledProductionPlanButton else disabledProductionPlanButton"></div>
-    <ng-template #enabledProductionPlanButton>
-      <div *ngIf="isEsCellProject">
-        <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'es cell'}" target="_blank"><button
-          class="create-button" mat-raised-button color="primary">Add Production Plan</button></a>
-      </div>
-      <div *ngIf="!isEsCellProject">
-        <a routerLink="plan-creation" [queryParams]="{planType: 'production'}" target="_blank"><button
-          class="create-button" mat-raised-button color="primary">Add Production Plan</button></a>
-      </div>
-
-    </ng-template>
-    <ng-template #disabledProductionPlanButton>
+    @if (canCreateProductionPlan) {
+      @if (isEsCellProject) {
+        <div>
+          <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'es cell'}" target="_blank"><button
+            class="create-button" mat-raised-button color="primary">Add Production Plan</button></a>
+        </div>
+      }
+      @if (!isEsCellProject) {
+        <div>
+          <a routerLink="plan-creation" [queryParams]="{planType: 'production'}" target="_blank"><button
+            class="create-button" mat-raised-button color="primary">Add Production Plan</button></a>
+        </div>
+      }
+    } @else {
       <button class="create-button" disabled="true" mat-raised-button color="primary">Add Production Plan</button>
-    </ng-template>
+    }
   </fieldset>
   <div class="separation"></div>
 
-  <div *ngIf="isEsCellProject">
-    <fieldset>
-      <legend class="subtitle">
-        ES Cell Allele Modification Plans
-      </legend>
-      <table style="width: 100%;" *ngIf="esCellAlleModPlansDetails.length > 0">
-        <tbody>
-          <tr *ngFor="let esCellAlleleModPlanDetail of sortByPid(esCellAlleModPlansDetails)">
-            <app-plan-summary [plan]="esCellAlleleModPlanDetail"></app-plan-summary>
-          </tr>
-        </tbody>
-      </table>
-      <br>
-
-      <div *ngIf="canCreateProductionPlan  && numberGenotypeConfirmedColonies > 0; then enabledEsCellAlleleModButton else disabledEsCellAlleleModPlanButton"></div>
-      <ng-template #enabledEsCellAlleleModButton>
-        <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'es cell allele modification'}" target="_blank"><button
+  @if (isEsCellProject) {
+    <div>
+      <fieldset>
+        <legend class="subtitle">
+          ES Cell Allele Modification Plans
+        </legend>
+        @if (esCellAlleModPlansDetails.length > 0) {
+          <table style="width: 100%;">
+            <tbody>
+              @for (esCellAlleleModPlanDetail of sortByPid(esCellAlleModPlansDetails); track esCellAlleleModPlanDetail) {
+                <tr>
+                  <app-plan-summary [plan]="esCellAlleleModPlanDetail"></app-plan-summary>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+        <br>
+        @if (canCreateProductionPlan  && numberGenotypeConfirmedColonies > 0) {
+          <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'es cell allele modification'}" target="_blank"><button
             class="create-button" mat-raised-button color="primary">Add ES Cell Allele Modification Plan</button></a>
-      </ng-template>
-      <ng-template #disabledEsCellAlleleModPlanButton>
-        <button class="create-button" disabled="true" mat-raised-button color="primary"
-        matTooltip="You cannot add ES Cell allele modification plans or there are not genotype confirmed colonies yet.">
-          Add ES Cell Allele Modification Plan
-        </button>
-      </ng-template>
-    </fieldset>
-    <div class="separation"></div>
-  </div>
-  <div *ngIf="isCrisprProject && hasConditionalCrisprPlan">
-    <div *ngIf=" hasConditionalCrisprPlan | async">
-    <fieldset>
-      <legend class="subtitle">
-       Crispr Allele Modification Plans
-      </legend>
-      <table style="width: 100%;" *ngIf="crisprAlleModPlansDetails.length > 0">
-        <tbody>
-        <tr *ngFor="let crisprAlleleModPlanDetail of sortByPid(crisprAlleModPlansDetails)">
-          <app-plan-summary [plan]="crisprAlleleModPlanDetail"></app-plan-summary>
-        </tr>
-        </tbody>
-      </table>
-      <br>
-
-      <div *ngIf="canCreateProductionPlan && numberGenotypeConfirmedColonies  > 0; then enabledCrisprAlleleModButton else disabledCrisprAlleleModPlanButton"></div>
-      <ng-template #enabledCrisprAlleleModButton>
-        <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'crispr allele modification'}" target="_blank"><button
-          class="create-button" mat-raised-button color="primary">Add Crispr Allele Modification Plan</button></a>
-      </ng-template>
-      <ng-template #disabledCrisprAlleleModPlanButton>
-        <button class="create-button" disabled="true" mat-raised-button color="primary"
-                matTooltip="You cannot add Crispr allele modification plans or there are not genotype confirmed colonies yet.">
-          Add Crispr Allele Modification Plan
-        </button>
-      </ng-template>
-    </fieldset>
-    <div class="separation"></div>
-  </div>
-  </div>
+        } @else {
+          <button class="create-button" disabled="true" mat-raised-button color="primary"
+                  matTooltip="You cannot add ES Cell allele modification plans or there are not genotype confirmed colonies yet.">
+            Add ES Cell Allele Modification Plan
+          </button>
+        }
+      </fieldset>
+      <div class="separation"></div>
+    </div>
+  }
+  @if (isCrisprProject && hasConditionalCrisprPlan) {
+    <div>
+      @if ( hasConditionalCrisprPlan | async) {
+        <div>
+          <fieldset>
+            <legend class="subtitle">
+              Crispr Allele Modification Plans
+            </legend>
+            @if (crisprAlleModPlansDetails.length > 0) {
+              <table style="width: 100%;">
+                <tbody>
+                  @for (crisprAlleleModPlanDetail of sortByPid(crisprAlleModPlansDetails); track crisprAlleleModPlanDetail) {
+                    <tr>
+                      <app-plan-summary [plan]="crisprAlleleModPlanDetail"></app-plan-summary>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+            <br>
+            @if (canCreateProductionPlan && numberGenotypeConfirmedColonies  > 0) {
+              <a routerLink="plan-creation" [queryParams]="{planType: 'production', attemptType: 'crispr allele modification'}" target="_blank"><button
+                class="create-button" mat-raised-button color="primary">Add Crispr Allele Modification Plan</button></a>
+            } @else {
+              <button class="create-button" disabled="true" mat-raised-button color="primary"
+                      matTooltip="You cannot add Crispr allele modification plans or there are not genotype confirmed colonies yet.">
+                Add Crispr Allele Modification Plan
+              </button>
+            }
+          </fieldset>
+          <div class="separation"></div>
+        </div>
+      }
+    </div>
+  }
 
   <fieldset>
     <legend class="subtitle">
       Phenotyping Plans
     </legend>
-    <table style="width: 100%;" *ngIf="phenotypingPlansDetails.length > 0">
-      <tbody>
-        <tr *ngFor="let phenotypingPlanDetail of sortByPid(phenotypingPlansDetails)">
-          <app-plan-summary [plan]="phenotypingPlanDetail"></app-plan-summary>
-        </tr>
-      </tbody>
-    </table>
+    @if (phenotypingPlansDetails.length > 0) {
+      <table style="width: 100%;">
+        <tbody>
+          @for (phenotypingPlanDetail of sortByPid(phenotypingPlansDetails); track phenotypingPlanDetail) {
+            <tr>
+              <app-plan-summary [plan]="phenotypingPlanDetail"></app-plan-summary>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
     <br>
 
-    <div *ngIf="canCreatePhenotypingPlan && numberGenotypeConfirmedColonies > 0; then enabledPhenotypingPlanButton else disabledPhenotypingPlanButton"></div>
-    <ng-template #enabledPhenotypingPlanButton>
+    @if (canCreatePhenotypingPlan && numberGenotypeConfirmedColonies > 0) {
       <a routerLink="plan-creation" [queryParams]="{planType: 'phenotyping'}" target="_blank"><button
-          class="create-button" mat-raised-button color="primary">Add Phenotyping Plan</button></a>
-      </ng-template>
-    <ng-template #disabledPhenotypingPlanButton>
+        class="create-button" mat-raised-button color="primary">Add Phenotyping Plan</button></a>
+    } @else {
       <button class="create-button" mat-raised-button color="primary" disabled="true"
-        matTooltip="You cannot add phenotyping plans or there are not genotype confirmed colonies yet.">Add Phenotyping Plan</button>
-    </ng-template>
+              matTooltip="You cannot add phenotyping plans or there are not genotype confirmed colonies yet.">Add Phenotyping Plan</button>
+    }
   </fieldset>
 </mat-card>

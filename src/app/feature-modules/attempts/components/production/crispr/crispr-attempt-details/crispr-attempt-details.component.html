@@ -2,8 +2,7 @@
   <mat-card appearance="outlined">
     <mat-card-subtitle>Crispr Attempt Details</mat-card-subtitle>
     <mat-card-content>
-      <div *ngIf="canUpdatePlan; then attemptEditable else attemptReadOnly"></div>
-      <ng-template #attemptEditable>
+      @if (canUpdatePlan) {
         <label for="miDate">MI date:</label>
         <mat-form-field appearance="fill" >
           <input matInput [matDatepicker]="datePicker" [(ngModel)]="crisprAttempt.miDate"
@@ -12,49 +11,40 @@
           <mat-datepicker #datePicker></mat-datepicker>
         </mat-form-field>
         <br>
-
         <label for="attemptExternalRef">MI external Ref:</label>
         <mat-form-field appearance="fill">
           <input matInput formControlName="miExternalRef" class="form-control"
-          (keyup)="onTextmiExternalRefChanged()">
+            (keyup)="onTextmiExternalRefChanged()">
         </mat-form-field>
         <br>
-
         <label for="experimental">Experimental:</label>
         <mat-checkbox (change)="onExperimentalChecked()" [checked]="this.crisprAttempt.experimental"></mat-checkbox>
         <div class="separation"></div>
-
         <label for="comment">Comment:</label>
         <mat-form-field appearance="fill">
-          <textarea matInput #box formControlName="comment" class="form-control"
-            (keyup)="onTextCommentChanged()"></textarea>
+          <textarea matInput #box formControlName="comment" class="form-control" (keyup)="onTextCommentChanged()"></textarea>
         </mat-form-field>
         <br>
-      </ng-template>
-
-      <ng-template #attemptReadOnly>
+      } @else {
         <label for="miDate">MI date:</label>
         <mat-form-field appearance="fill">
           <input matInput readonly [(value)]="crisprAttempt.miDate" />
         </mat-form-field>
         <br>
-
         <label for="attemptExternalRef">MI external Ref:</label>
         <mat-form-field appearance="fill">
           <input matInput readonly [(value)]="crisprAttempt.attemptExternalRef" />
         </mat-form-field>
         <br>
-
         <label for="experimental">Experimental:</label>
         <mat-checkbox [(value)]="crisprAttempt.experimental" [disabled]=true></mat-checkbox>
         <div class="separation"></div>
-
         <label for="comment">Comment:</label>
         <mat-form-field appearance="fill">
-            <textarea matInput readonly [(value)]="crisprAttempt.comment"></textarea>
+          <textarea matInput readonly [(value)]="crisprAttempt.comment"></textarea>
         </mat-form-field>
         <br>
-      </ng-template>
+      }
     </mat-card-content>
   </mat-card>
 </form>

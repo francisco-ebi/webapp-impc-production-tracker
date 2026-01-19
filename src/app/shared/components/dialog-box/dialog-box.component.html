@@ -1,19 +1,25 @@
-  <!-- <h1 mat-dialog-title *ngIf="action !== ''">Row Action :: <strong>{{ action }}</strong></h1> -->
-  <div mat-dialog-content>
-    <mat-form-field appearance="fill" *ngIf="action === 'Update'">
+<!-- <h1 mat-dialog-title *ngIf="action !== ''">Row Action :: <strong>{{ action }}</strong></h1> -->
+<div mat-dialog-content>
+  @if (action === 'Update') {
+    <mat-form-field appearance="fill">
       <input placeholder="{{action}} Symbol " matInput [(ngModel)]="localData.symbol">
     </mat-form-field>
-    <p *ngIf="action === 'Delete'">
+  }
+  @if (action === 'Delete') {
+    <p>
       Sure to delete <b>{{ localData.symbol }}</b>?
     </p>
-    <p *ngIf="action === ''">
-      Gene symbol <b>{{ localData.symbol }}</b> already exists. 
+  }
+  @if (action === '') {
+    <p>
+      Gene symbol <b>{{ localData.symbol }}</b> already exists.
       <!-- {{ localData.symbol }} -->
     </p>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="doAction()">{{ action }}</button>
-    <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
-  </div>
+  }
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="doAction()">{{ action }}</button>
+  <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+</div>
 
 

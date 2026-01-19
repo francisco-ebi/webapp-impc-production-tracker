@@ -1,65 +1,65 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>QC Results</mat-card-subtitle>
-    <mat-card-content>
-        <table>
-            <tr class="header">
-                <th>Type</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-            <ng-template ngFor let-mutationQcResult [ngForOf]="mutation.mutationQcResults">
-                <div *ngIf="canUpdate; then editableRow else readOnlyRow">
-                </div>
-                <ng-template #editableRow>
-                    <tr>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select class="select-content" [(ngModel)]="mutationQcResult.qcTypeName">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let qcType of qcTypes" [value]="qcType.name">
-                                        {{ qcType.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select class="select-content" [(ngModel)]="mutationQcResult.statusName">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let qcStatus of qcStatuses" [value]="qcStatus.name">
-                                        {{ qcStatus.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-
-                        <td class="delete">
-                            <button (click)="onClickToDelete(mutationQcResult)">
-                                <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
-                            </button>
-                        </td>
-
-                    </tr>
-                    
-                </ng-template>
-                <ng-template #readOnlyRow>
-                    <tr>
-                        <td>
-                            {{ mutationQcResult.qcTypeName }}
-                        </td>
-                        <td>
-                            {{ mutationQcResult.statusName }}
-                        </td>
-
-                    </tr>
-                </ng-template>
-            </ng-template>
-            <tr>
-                <td class="no_border"><button (click)="addRow()" *ngIf="canUpdate">
-                        <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-                    </button>
-                </td>
-            </tr>
-        </table>
-    </mat-card-content>
+  <mat-card-subtitle>QC Results</mat-card-subtitle>
+  <mat-card-content>
+    <table>
+      <tr class="header">
+        <th>Type</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+      @for (mutationQcResult of mutation.mutationQcResults; track mutationQcResult) {
+        @if (canUpdate) {
+          <tr>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select class="select-content" [(ngModel)]="mutationQcResult.qcTypeName">
+                  <mat-option></mat-option>
+                  @for (qcType of qcTypes; track qcType) {
+                    <mat-option [value]="qcType.name">
+                      {{ qcType.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field appearance="fill">
+                <mat-select class="select-content" [(ngModel)]="mutationQcResult.statusName">
+                  <mat-option></mat-option>
+                  @for (qcStatus of qcStatuses; track qcStatus) {
+                    <mat-option [value]="qcStatus.name">
+                      {{ qcStatus.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </td>
+            <td class="delete">
+              <button (click)="onClickToDelete(mutationQcResult)">
+                <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        } @else {
+          <tr>
+            <td>
+              {{ mutationQcResult.qcTypeName }}
+            </td>
+            <td>
+              {{ mutationQcResult.statusName }}
+            </td>
+          </tr>
+        }
+      }
+      <tr>
+        <td class="no_border">
+          @if (canUpdate) {
+            <button (click)="addRow()">
+              <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+            </button>
+          }
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
 </mat-card>

@@ -1,76 +1,87 @@
 <mat-card appearance="outlined">
-    <mat-card-title>Public Gene Lists</mat-card-title>
-
-    <p>
-        Select the consortium to view each list:
-    </p>
-
-    <table>
-        <tr *ngFor="let geneListDescription of geneListDescriptions">
-            <td> <button
-                    (click)="consortiumClicked(geneListDescription.consortiumName)">{{ geneListDescription.consortiumName }}</button>
-            </td>
-        </tr>
-    </table>
-
-    <div>
-        <button *ngIf="currentConsortium" mat-button (click)="onDownloadClicked()" color="accent">
-          <mat-icon>save_alt</mat-icon> Download as CSV
-        </button>
-      </div>
-
-    <div *ngIf="currentConsortium" class="geneList">
-        <mat-spinner style="margin:0 auto;" *ngIf="isLoading" matSuffix mode="indeterminate" diameter=100></mat-spinner>
-        <div *ngIf="!isLoading"><b>{{currentConsortium}}</b> public Gene List</div>
-        <table *ngIf=!isLoading class="content">
-            <thead>
-                <tr>
-                    <th>Gene(s)</th>
-                    <th>Note</th>
-                    <th>Types</th>
-                    <th>Project Id</th>
-                    <th>Project Summary Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let element of dataSource">
-                    <td rowspan="calculateRowspan(element)">
-
-                        {{ getGenesSymbols(element) }}
-
-                    </td>
-                    <td rowspan="calculateRowspan(element)">
-
-                        {{ element.note }}
-
-                    </td>
-                    <td rowspan="calculateRowspan(element)">
-                        {{ element.recordTypes }}
-
-                    </td>
-                    <td>
-                        <div *ngFor="let project of element.projects">
-                            <div *ngIf="project">
-                                <div><a target="_blank" routerLink="/projects/{{ project.tpn }}">{{ project.tpn }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div *ngFor="let project of element.projects">
-                            <div *ngIf="project">
-                                {{ project.summaryStatus }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+  <mat-card-title>Public Gene Lists</mat-card-title>
+  <p>
+    Select the consortium to view each list:
+  </p>
+  <table>
+    @for (geneListDescriptionItem of geneListDescriptions; track $index) {
+      <tr>
+        <td>
+          <button (click)="consortiumClicked(geneListDescriptionItem.consortiumName)">
+            {{ geneListDescriptionItem.consortiumName }}
+          </button>
+        </td>
+      </tr>
+    }
+  </table>
+  <div>
+    @if (currentConsortium) {
+      <button mat-button (click)="onDownloadClicked()" color="accent">
+        <mat-icon>save_alt</mat-icon> Download as CSV
+      </button>
+    }
+  </div>
+  @if (currentConsortium) {
+    <div class="geneList">
+      @if (isLoading) {
+        <mat-spinner style="margin:0 auto;" matSuffix mode="indeterminate" diameter=100></mat-spinner>
+      } @else {
+        <div><b>{{currentConsortium}}</b> public Gene List</div>
+        <table class="content">
+          <thead>
+          <tr>
+            <th>Gene(s)</th>
+            <th>Note</th>
+            <th>Types</th>
+            <th>Project Id</th>
+            <th>Project Summary Status</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          @for (element of dataSource; track $index) {
+            <tr>
+              <td rowspan="calculateRowspan(element)">
+                {{ getGenesSymbols(element) }}
+              </td>
+              <td rowspan="calculateRowspan(element)">
+                {{ element.note }}
+              </td>
+              <td rowspan="calculateRowspan(element)">
+                {{ element.recordTypes }}
+              </td>
+              <td>
+                @for(project of element.projects; track $index) {
+                  @if(project) {
+                    <div>
+                      <a target="_blank" routerLink="/projects/{{ project.tpn }}">{{ project.tpn }}</a>
+                    </div>
+                  }
+                }
+              </td>
+              <td>
+                @for(project of element.projects; track $index) {
+                  @if(project) {
+                    <div>
+                      {{ project.summaryStatus }}
+                    </div>
+                  }
+                }
+              </td>
+            </tr>
+          }
+          </tbody>
         </table>
-
-        <mat-paginator (page)="onPaginatorChanged(this.paginator)" [length]="page.totalElements" [pageSize]="page.size"
-            [pageSizeOptions]="[10,20,50,100,200]" id="server"></mat-paginator>
+      }
+      <mat-paginator
+        (page)="onPaginatorChanged(this.paginator)"
+        [length]="page.totalElements"
+        [pageSize]="page.size"
+        [pageSizeOptions]="[10,20,50,100,200]"
+        id="server"
+      >
+      </mat-paginator>
     </div>
-
-    <mat-card-content></mat-card-content>
+  }
+  <mat-card-content></mat-card-content>
 </mat-card>

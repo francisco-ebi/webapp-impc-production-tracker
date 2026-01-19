@@ -1,23 +1,23 @@
-<div *ngIf="canUpdate; then consortiaEditable else consortiaReadOnly"></div>
-<ng-template #consortiaEditable>
-    <ng-container [formGroup]="consortiaForm">
-        <label for="consortiumName">Consortia *:</label>
-        <mat-form-field appearance="fill">
-            <mat-label>Choose your consortium</mat-label>
-            <mat-select multiple
-                        (blur)="onTouched()" 
-                        formControlName="consortiumName">
-                <mat-option *ngFor="let consortium of consortia" [value]="consortium.name">
-                    {{ consortium.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </ng-container>
-    <br>
-</ng-template>
-<ng-template #consortiaReadOnly>
-    <label for="consortia">Consortia:</label>
+@if (canUpdate) {
+  <ng-container [formGroup]="consortiaForm">
+    <label for="consortiumName">Consortia *:</label>
     <mat-form-field appearance="fill">
-        <input matInput readonly [value]="consortiumNames" />
+      <mat-label>Choose your consortium</mat-label>
+      <mat-select multiple
+        (blur)="onTouched()"
+        formControlName="consortiumName">
+        @for (consortium of consortia; track consortium) {
+          <mat-option [value]="consortium.name">
+            {{ consortium.name }}
+          </mat-option>
+        }
+      </mat-select>
     </mat-form-field>
-</ng-template>
+  </ng-container>
+  <br>
+} @else {
+  <label for="consortia">Consortia:</label>
+  <mat-form-field appearance="fill">
+    <input matInput readonly [value]="consortiumNames" />
+  </mat-form-field>
+}

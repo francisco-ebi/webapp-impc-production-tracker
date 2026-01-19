@@ -1,75 +1,85 @@
 <mat-card appearance="outlined">
-    <mat-card-subtitle>Intention(s)</mat-card-subtitle>
-    <mat-card-content>
-        <ng-container [formGroup]="projectIntentionsForm">
-            <table class="mat-elevation-z8">
-                <tr>
-                    <th>Molecular mutation type *</th>
-                    <th>Mutation categorization(s)</th>
-                    <th>Gene symbol *</th>
-                    <th></th>
-                </tr>
-                <tr formArrayName="intentions" *ngFor="let intention of projectIntentionsForm.get('intentions')['controls']; let i = index">
-                    <ng-container [formGroupName]="i">
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select
-                                    (blur)="onTouched()" 
-                                    [id]="'molecularMutationType' + i"
-                                    formControlName="molecularMutationType">
-                                    <mat-option></mat-option>
-                                    <mat-option *ngFor="let molecularMutationType of molecularMutationTypes" [value]="molecularMutationType.name">
-                                        {{ molecularMutationType.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill">
-                                <mat-select multiple
-                                            (blur)="onTouched()" 
-                                            [id]="'mutationCategorizations' + i"
-                                            formControlName="mutationCategorizations">
-                                    <mat-option *ngFor="let mutationCategorization of mutationCategorizationsByType[alleleCategoryKey]" [value]="mutationCategorization.name">
-                                        {{ mutationCategorization.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <mat-form-field appearance="fill" class="content">
-                                <input matInput 
-                                    placeholder="" 
-                                    aria-label="Gene" 
-                                    [matAutocomplete]="auto" 
-                                    [formControl]="searchGeneCtrl" 
-                                    [id]="'geneSymbol' + i" 
-                                    (change)="geneInput(i, $event.target.value)" /> 
-                                <mat-autocomplete #auto="matAutocomplete">
-                                    <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
-                                    <ng-container *ngIf="!isLoading" >
-                                        <mat-option *ngFor="let gene of filteredGenes" [value]="gene.symbol" (onSelectionChange)="geneSelected(i, gene)">
-                                            <span><b>{{ gene.symbol }}</b> ({{ gene.accId }})</span>
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-autocomplete>
-                            </mat-form-field>
-                        </td>
-                        <td>
-                            <button type="button" (click)="removeIntentionButtonClick(i)">
-                                <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
-                            </button>
-                        </td>
-                    </ng-container>
-                </tr>
-                <tr>
-                    <td>
-                        <button type="button" (click)="addIntentionButtonClick()">
-                            <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </ng-container>
-    </mat-card-content>
+  <mat-card-subtitle>Intention(s)</mat-card-subtitle>
+  <mat-card-content>
+    <ng-container [formGroup]="projectIntentionsForm">
+      <table class="mat-elevation-z8">
+        <tr>
+          <th>Molecular mutation type *</th>
+          <th>Mutation categorization(s)</th>
+          <th>Gene symbol *</th>
+          <th></th>
+        </tr>
+        @for (intention of projectIntentionsForm.get('intentions')['controls']; track intention; let i = $index) {
+          <tr formArrayName="intentions">
+            <ng-container [formGroupName]="i">
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select
+                    (blur)="onTouched()"
+                    [id]="'molecularMutationType' + i"
+                    formControlName="molecularMutationType">
+                    <mat-option></mat-option>
+                    @for (molecularMutationType of molecularMutationTypes; track molecularMutationType) {
+                      <mat-option [value]="molecularMutationType.name">
+                        {{ molecularMutationType.name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill">
+                  <mat-select multiple
+                    (blur)="onTouched()"
+                    [id]="'mutationCategorizations' + i"
+                    formControlName="mutationCategorizations">
+                    @for (mutationCategorization of mutationCategorizationsByType[alleleCategoryKey]; track mutationCategorization) {
+                      <mat-option [value]="mutationCategorization.name">
+                        {{ mutationCategorization.name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill" class="content">
+                  <input matInput
+                    placeholder=""
+                    aria-label="Gene"
+                    [matAutocomplete]="auto"
+                    [formControl]="searchGeneCtrl"
+                    [id]="'geneSymbol' + i"
+                    (change)="geneInput(i, $event.target.value)" />
+                    <mat-autocomplete #auto="matAutocomplete">
+                      @if (isLoading) {
+                        <mat-option class="is-loading">Loading...</mat-option>
+                      }
+                      @if (!isLoading) {
+                        @for (gene of filteredGenes; track gene) {
+                          <mat-option [value]="gene.symbol" (onSelectionChange)="geneSelected(i, gene)">
+                            <span><b>{{ gene.symbol }}</b> ({{ gene.accId }})</span>
+                          </mat-option>
+                        }
+                      }
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <button type="button" (click)="removeIntentionButtonClick(i)">
+                    <mat-icon aria-hidden="false" aria-label="icon">delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+            </tr>
+          }
+        <tr>
+          <td>
+            <button type="button" (click)="addIntentionButtonClick()">
+              <mat-icon aria-hidden="false" aria-label="add icon">add</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </ng-container>
+  </mat-card-content>
 </mat-card>

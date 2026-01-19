@@ -1,7 +1,9 @@
 <mat-card appearance="outlined">
   <mat-card-content>
     <app-go-back></app-go-back>
-    <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+    @if (error) {
+      <div class="alert alert-danger">{{error}}</div>
+    }
     <table>
       <tr>
         <th>Id</th>
@@ -13,61 +15,53 @@
         <th>From</th>
         <th>To</th>
       </tr>
-      <ng-template ngFor let-historyRecord [ngForOf]="sortedData">
-
-        <div *ngIf="historyRecord.details && historyRecord.details.length > 0 then changeWithDetails else changeWithoutDetails"></div>
-
-        <ng-template #changeWithDetails>
-
-          <ng-template ngFor let-change let-isFirst="first" [ngForOf]="historyRecord.details">
+      @for (historyRecord of sortedData; track historyRecord) {
+        @if (historyRecord.details && historyRecord.details.length > 0) {
+          @for (change of historyRecord.details; track change; let isFirst = $first) {
             <tr>
-              <td *ngIf="isFirst" [attr.rowspan]="historyRecord.details.length">
-                {{historyRecord.id}}
-              </td>
-              <td class="tablename" *ngIf="isFirst" [attr.rowspan]="historyRecord.details.length">
-                {{historyRecord.user}}
-              </td>
-              <td class="nowrap-text-style" *ngIf="isFirst" [attr.rowspan]="historyRecord.details.length">
-                {{historyRecord.date | date : 'medium'}}
-              </td>
-              <td class="tablename" *ngIf="isFirst" [attr.rowspan]="historyRecord.details.length">
-                {{ historyRecord.comment }}
-              </td>
-
+              @if (isFirst) {
+                <td [attr.rowspan]="historyRecord.details.length">
+                  {{historyRecord.id}}
+                </td>
+              }
+              @if (isFirst) {
+                <td class="tablename" [attr.rowspan]="historyRecord.details.length">
+                  {{historyRecord.user}}
+                </td>
+              }
+              @if (isFirst) {
+                <td class="nowrap-text-style" [attr.rowspan]="historyRecord.details.length">
+                  {{historyRecord.date | date : 'medium'}}
+                </td>
+              }
+              @if (isFirst) {
+                <td class="tablename" [attr.rowspan]="historyRecord.details.length">
+                  {{ historyRecord.comment }}
+                </td>
+              }
               <td> {{ change.field }}
               </td>
               <td> {{ change.note }}
               </td>
               <td>
-                <div
-                  *ngIf="isTextLargerThanLimit(change.oldValue); then showLargeTextContentOldValue else showContentOldValue">
-                </div>
-                <ng-template #showLargeTextContentOldValue>
+                @if (isTextLargerThanLimit(change.oldValue)) {
                   <app-expandable-content [title]="getTitleForExpandable()" [content]="change.oldValue">
                   </app-expandable-content>
-                </ng-template>
-                <ng-template #showContentOldValue>
+                } @else {
                   {{ change.oldValue || 'null'}}
-                </ng-template>
+                }
               </td>
               <td>
-                <div
-                  *ngIf="isTextLargerThanLimit(change.newValue); then showLargeTextContentNewValue else showContentNewValue">
-                </div>
-                <ng-template #showLargeTextContentNewValue>
+                @if (isTextLargerThanLimit(change.newValue)) {
                   <app-expandable-content [title]="getTitleForExpandable()" [content]="change.newValue">
                   </app-expandable-content>
-
-                </ng-template>
-                <ng-template #showContentNewValue>
+                } @else {
                   {{ change.newValue || 'null'}}
-                </ng-template>
+                }
               </td>
             </tr>
-          </ng-template>
-        </ng-template>
-
-        <ng-template #changeWithoutDetails>
+          }
+        } @else {
           <tr>
             <td>
               {{historyRecord.id}}
@@ -82,10 +76,8 @@
               {{ historyRecord.comment }}
             </td>
           </tr>
-
-        </ng-template>
-
-      </ng-template>
+        }
+      }
     </table>
   </mat-card-content>
 </mat-card>
