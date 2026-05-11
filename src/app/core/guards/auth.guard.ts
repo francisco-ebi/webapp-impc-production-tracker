@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate, CanLoad {
             return this.canExecuteManagerTasks();
         }
         if (url.indexOf('/admin/') >= 0) {
-            if (url.indexOf(PermissionsService.REGISTER_USER)) {
+            if (url.indexOf(PermissionsService.REGISTER_USER) >= 0) {
                 return this.canManageUsers();
             } else {
                 console.warn('No evaluation yet for this task', url);
