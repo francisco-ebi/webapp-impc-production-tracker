@@ -17,7 +17,6 @@ import { GenesModule } from './feature-modules/genes/genes.module';
 import { SequencesModule } from './feature-modules/sequences/sequences.module';
 import { IntentionsModule } from './feature-modules/intentions/intentions.module';
 import { TargetGeneListModule } from './feature-modules/target-gene-list/target-gene-list.module';
-import { UsersModule } from './feature-modules/users/users.module';
 
 import { BASE_API_URL_TOKEN } from './injectors';
 import { NgChartsModule } from 'ng2-charts';
@@ -32,7 +31,6 @@ import { NgChartsModule } from 'ng2-charts';
     CoreModule,
     SharedModule,
     LoginModule,
-    UsersModule,
     ProjectsModule,
     PlansModule,
     SearchModule,
