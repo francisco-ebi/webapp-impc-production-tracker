@@ -32,6 +32,9 @@ export class AuthGuard implements CanActivate, CanLoad {
                 return of(false);
             }
         } else {
+            if (path === "edit_profile") {
+              return of(this.loggedUserService.userIsLoggedIn() === true);
+            }
             return of(true);
         }
     }
