@@ -40,6 +40,12 @@ variables:
   # see: https://gitlab.com/gitlab-com/gl-infra/production/issues/982
   DOCKER_TLS_CERTDIR: ""
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+sast:
+  stage: build
 
 stages:
   - env
@@ -65,6 +71,7 @@ stages:
 #     - echo '================================='
 #     - echo $PRODUCTION_DEPLOYMENT
 #     - echo $CI_PIPELINE_SOURCE
+
 
 
 build_image:
