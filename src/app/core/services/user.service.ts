@@ -15,6 +15,7 @@ export class UserService {
   private apiServiceUrl;
   private currentLoggedUser: Observable<User>;
   private config$: Observable<AssetConfiguration>;
+  private isLoggedIn: boolean;
 
   constructor(private http: HttpClient, private configAssetLoaderService: ConfigAssetLoaderService) {
     this.config$ = from(this.configAssetLoaderService.getConfig());
@@ -32,12 +33,14 @@ export class UserService {
         publishReplay(1),
         refCount()
       );
+      this.isLoggedIn = true;
     }
     return this.currentLoggedUser;
   }
 
   clearCurrentLoggedUser() {
     this.currentLoggedUser = null;
+    this.isLoggedIn = false;
   }
 
   fetchCurrentLoggedUser(): Observable<User> {
@@ -56,6 +59,10 @@ export class UserService {
   resetPassword() {
     return this.http.put(this.apiServiceUrl + '/api/people/resetPassword', {})
       .pipe(map(result => result));
+  }
+
+  userIsLoggedIn() {
+    return this.isLoggedIn;
   }
 
 }

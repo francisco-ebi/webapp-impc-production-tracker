@@ -86,4 +86,8 @@ export class LoggedUserService {
       }
     }));
   }
+
+  userIsLoggedIn() {
+    return this.userService.userIsLoggedIn();
+  }
 }
