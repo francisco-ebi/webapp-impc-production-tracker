@@ -39,17 +39,20 @@ variables:
   # Logged as: GitLab.com CI jobs failing if using docker:stable-dind image
   # see: https://gitlab.com/gitlab-com/gl-infra/production/issues/982
   DOCKER_TLS_CERTDIR: ""
+  GITLAB_ADVANCED_SAST_ENABLED: 'true'
 
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 sast:
-  stage: build
+  stage: test
 
 stages:
   - env
   - build
+  - test
   - production-deploy
   - sandbox-deploy
   - dev-deploy
@@ -71,7 +74,6 @@ stages:
 #     - echo '================================='
 #     - echo $PRODUCTION_DEPLOYMENT
 #     - echo $CI_PIPELINE_SOURCE
-
 
 
 build_image:
@@ -111,7 +113,10 @@ build_image:
     paths:
       - mnt/
 
-
+jest_unit_tests:
+  stage: test
+  script:
+    - echo "PLACEHOLDER TEST JOB"
 
 
 hh-production:
