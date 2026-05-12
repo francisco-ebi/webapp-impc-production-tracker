@@ -45,11 +45,12 @@ include:
   - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 sast:
-  stage: build
+  stage: test
 
 stages:
   - env
   - build
+  - test
   - production-deploy
   - sandbox-deploy
   - dev-deploy
@@ -71,7 +72,6 @@ stages:
 #     - echo '================================='
 #     - echo $PRODUCTION_DEPLOYMENT
 #     - echo $CI_PIPELINE_SOURCE
-
 
 
 build_image:
@@ -111,7 +111,10 @@ build_image:
     paths:
       - mnt/
 
-
+jest_unit_tests:
+  stage: test
+  script:
+    - echo "PLACEHOLDER TEST JOB"
 
 
 hh-production:
