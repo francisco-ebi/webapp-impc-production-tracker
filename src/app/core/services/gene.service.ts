@@ -21,14 +21,7 @@ export class GeneService {
   }
 
   findGenesNamesStartingWith(symbol: string) {
-    if (symbol.length >= 3) {
-      const input = symbol + this.likeCharacter;
-
-      return this.http.get<string[]>(this.apiServiceUrl + '/api/genesNamesInExternalData?input=' + input);
-    } else {
-      return this.http.get<string[]>(this.apiServiceUrl + '/api/genesNamesInExternalData?input=' + symbol);
-
-    }
+    return this.http.get<string[]>(this.apiServiceUrl + '/api/genesNamesInExternalData?input=' + symbol);
   }
 
   findGenesExternalDataBySymbol(symbol: string) {
