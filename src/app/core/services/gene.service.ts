@@ -25,6 +25,6 @@ export class GeneService {
   }
 
   findGenesExternalDataBySymbol(symbol: string) {
-      return this.http.get<string[]>(this.apiServiceUrl + '/api/genesInExternalData?input=' + input);
+      return this.http.get<string[]>(this.apiServiceUrl + '/api/genesInExternalData?input=' + symbol);
   }
 }
