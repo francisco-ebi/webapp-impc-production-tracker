@@ -40,6 +40,7 @@ variables:
   # see: https://gitlab.com/gitlab-com/gl-infra/production/issues/982
   DOCKER_TLS_CERTDIR: ""
   GITLAB_ADVANCED_SAST_ENABLED: 'true'
+  DS_ENFORCE_NEW_ANALYZER: 'true'
 
 include:
   - template: Security/SAST.gitlab-ci.yml
